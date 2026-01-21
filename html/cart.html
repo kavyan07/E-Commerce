@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - EasyCart</title>
+    <link rel="stylesheet" href="../css/cart.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">🛒 EasyCart</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product-listing.html">Products</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="my-orders.html">My Orders</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>🛒 Shopping Cart</h1>
+
+        <div class="cart-layout">
+            <div class="cart-items">
+                <!-- Cart Item 1 -->
+                <div class="cart-item">
+                    <div class="item-image">👟</div>
+                    <div class="item-details">
+                        <h3>Premium Sneakers</h3>
+                        <p>Size: 10 | Color: White</p>
+                    </div>
+                    <div class="quantity">
+                        <button>−</button>
+                        <span>1</span>
+                        <button>+</button>
+                    </div>
+                    <div class="item-price">₹2,499</div>
+                    <button class="remove-btn">Remove</button>
+                </div>
+
+                <!-- Cart Item 2 -->
+                <div class="cart-item">
+                    <div class="item-image">⌚</div>
+                    <div class="item-details">
+                        <h3>Smart Watch</h3>
+                        <p>Color: Black</p>
+                    </div>
+                    <div class="quantity">
+                        <button>−</button>
+                        <span>1</span>
+                        <button>+</button>
+                    </div>
+                    <div class="item-price">₹4,999</div>
+                    <button class="remove-btn">Remove</button>
+                </div>
+
+                <!-- Cart Item 3 -->
+                <div class="cart-item">
+                    <div class="item-image">📱</div>
+                    <div class="item-details">
+                        <h3>Phone Case</h3>
+                        <p>Color: Blue</p>
+                    </div>
+                    <div class="quantity">
+                        <button>−</button>
+                        <span>2</span>
+                        <button>+</button>
+                    </div>
+                    <div class="item-price">₹1,198</div>
+                    <button class="remove-btn">Remove</button>
+                </div>
+            </div>
+
+            <div class="price-summary">
+                <h2>Order Summary</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>₹8,696</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>₹299</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Tax:</span>
+                    <span>₹1,554</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>₹10,549</span>
+                </div>
+
+                <a href="checkout.html"><button class="checkout-btn">Proceed to Checkout</button></a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EasyCart - All Rights Reserved</p>
+    </footer>
+</body>
+</html>

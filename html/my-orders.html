@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - EasyCart</title>
+      <link rel="stylesheet" href="../css/my-orders.css">
+    
+</head>
+<body>
+    <nav>
+        <div class="logo">🛒 EasyCart</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product-listing.html">Products</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="my-orders.html">My Orders</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>📋 My Orders</h1>
+
+        <div class="orders-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Order 1 -->
+                    <tr>
+                        <td class="order-id">#ORD-001234</td>
+                        <td class="order-date">Jan 15, 2026</td>
+                        <td class="order-items">3 items</td>
+                        <td class="order-total">₹10,549</td>
+                        <td><span class="status delivered">✓ Delivered</span></td>
+                        <td><button class="action-btn">View</button></td>
+                    </tr>
+
+                    <!-- Order 2 -->
+                    <tr>
+                        <td class="order-id">#ORD-001235</td>
+                        <td class="order-date">Jan 12, 2026</td>
+                        <td class="order-items">2 items</td>
+                        <td class="order-total">₹5,799</td>
+                        <td><span class="status delivered">✓ Delivered</span></td>
+                        <td><button class="action-btn">View</button></td>
+                    </tr>
+
+                    <!-- Order 3 -->
+                    <tr>
+                        <td class="order-id">#ORD-001236</td>
+                        <td class="order-date">Jan 10, 2026</td>
+                        <td class="order-items">1 item</td>
+                        <td class="order-total">₹2,499</td>
+                        <td><span class="status shipped">📦 Shipped</span></td>
+                        <td><button class="action-btn">Track</button></td>
+                    </tr>
+
+                    <!-- Order 4 -->
+                    <tr>
+                        <td class="order-id">#ORD-001237</td>
+                        <td class="order-date">Jan 08, 2026</td>
+                        <td class="order-items">4 items</td>
+                        <td class="order-total">₹8,299</td>
+                        <td><span class="status processing">⏳ Processing</span></td>
+                        <td><button class="action-btn cancel">Cancel</button></td>
+                    </tr>
+
+                    <!-- Order 5 -->
+                    <tr>
+                        <td class="order-id">#ORD-001238</td>
+                        <td class="order-date">Jan 05, 2026</td>
+                        <td class="order-items">2 items</td>
+                        <td class="order-total">₹3,599</td>
+                        <td><span class="status delivered">✓ Delivered</span></td>
+                        <td><button class="action-btn">View</button></td>
+                    </tr>
+
+                    <!-- Order 6 -->
+                    <tr>
+                        <td class="order-id">#ORD-001239</td>
+                        <td class="order-date">Dec 28, 2025</td>
+                        <td class="order-items">1 item</td>
+                        <td class="order-total">₹1,999</td>
+                        <td><span class="status cancelled">✗ Cancelled</span></td>
+                        <td><button class="action-btn">Reorder</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EasyCart - All Rights Reserved</p>
+    </footer>
+</body>
+</html>
