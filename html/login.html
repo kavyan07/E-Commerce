@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EasyCart</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">🛒 EasyCart</div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="product-listing.html">Products</a></li>
+            <li><a href="cart.html">Cart</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="my-orders.html">My Orders</a></li>
+        </ul>
+    </nav>
+
+    <div class="login-container">
+        <div class="login-card">
+            <h1>🔐 Login</h1>
+
+            <div id="message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+
+
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <div class="signup-link">
+                Don't have an account? <a href="signup.html">Sign up here</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EasyCart - All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Login logic
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const msgDiv = document.getElementById('message');
+            msgDiv.innerHTML = "";
+
+            const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                msgDiv.innerHTML = '<p class="error-msg">Invalid email or password.</p>';
+                return;
+            }
+
+            // Store login info
+            localStorage.setItem('easycart_loggedInUser', JSON.stringify(user));
+            msgDiv.innerHTML = '<p class="success-msg">Login successful! Redirecting to home...</p>';
+
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 1000);
+        });
+
+
+    </script>
+</body>
+</html>
