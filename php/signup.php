@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - EasyCart</title>
-    <link rel="stylesheet" href="../css/signup.css">
-</head>
-<body>
-    <nav>
-        <div class="logo">🛒 EasyCart</div>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="product-listing.html">Products</a></li>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="my-orders.html">My Orders</a></li>
-        </ul>
-    </nav>
+<?php
+$page_title = 'Signup - EasyCart';
+$page_css = 'signup.css';
+require_once __DIR__ . '/../includes/header.php';
+?>
 
-    <div class="signup-container">
-        <div class="signup-card">
+    <div class="container">
+        <div class="signup-container">
+            <div class="signup-card">
             <h1>Create Account</h1>
 
             <div id="message"></div>
@@ -66,15 +53,12 @@
                 <button type="submit" class="signup-btn">Create Account</button>
             </form>
 
-            <div class="login-link">
-                Already have an account? <a href="login.html">Login here</a>
+                <div class="login-link">
+                    Already have an account? <a href="login.php">Login here</a>
+                </div>
             </div>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2026 EasyCart - All Rights Reserved</p>
-    </footer>
 
     <script>
         // Simple localStorage-based signup
@@ -120,9 +104,10 @@
 
             // Redirect to login
             setTimeout(function() {
-                window.location.href = 'login.html';
+                window.location.href = 'login.php';
             }, 1500);
         });
     </script>
-</body>
-</html>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+
