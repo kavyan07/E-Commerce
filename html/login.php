@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - EasyCart</title>
-    <link rel="stylesheet" href="../css/login.css">
-</head>
-<body>
-    <nav>
-        <div class="logo">🛒 EasyCart</div>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="product-listing.html">Products</a></li>
-            <li><a href="cart.html">Cart</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="my-orders.html">My Orders</a></li>
-        </ul>
-    </nav>
+<?php
+$page_title = 'Login - EasyCart';
+$page_css = 'login.css';
+require_once __DIR__ . '/../includes/header.php';
+?>
 
-    <div class="login-container">
-        <div class="login-card">
+    <div class="container">
+        <div class="login-container">
+            <div class="login-card">
             <h1>🔐 Login</h1>
 
             <div id="message"></div>
@@ -48,18 +35,15 @@
                 <a href="#">Forgot Password?</a>
             </div>
 
-            <div class="signup-link">
-                Don't have an account? <a href="signup.html">Sign up here</a>
+                <div class="signup-link">
+                    Don't have an account? <a href="signup.php">Sign up here</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 EasyCart - All Rights Reserved</p>
-    </footer>
-
     <script>
-        // Login logic
+        // Login logic (keeps original localStorage approach)
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('email').value.trim();
@@ -80,11 +64,9 @@
             msgDiv.innerHTML = '<p class="success-msg">Login successful! Redirecting to home...</p>';
 
             setTimeout(function() {
-                window.location.href = 'index.html';
+                window.location.href = 'index.php';
             }, 1000);
         });
-
-
     </script>
-</body>
-</html>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
