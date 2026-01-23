@@ -95,6 +95,7 @@ nav ul li a:hover::after {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -229,24 +230,71 @@ nav ul li a:hover::after {
 /* ===== MESSAGES ===== */
 #message {
     margin-bottom: 1rem;
+    background: transparent !important;
 }
 
-.error-msg {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-    color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 500;
+#message * {
+    background: transparent !important;
 }
 
-.success-msg {
-    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-    color: #fff;
-    padding: 1rem;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 500;
+#message p.error-msg {
+    color: #d32f2f !important;
+    padding: 0.5rem 0 !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    font-size: 0.95rem;
+}
+
+#message p.success-msg {
+    color: #16a34a !important;
+    padding: 0.5rem 0 !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+    font-size: 0.95rem;
+}
+
+#message .error-msg {
+    color: #d32f2f !important;
+    padding: 0.5rem 0 !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    font-size: 0.95rem;
+}
+
+#message .success-msg {
+    color: #16a34a !important;
+    padding: 0.5rem 0 !important;
+    text-align: center !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    font-size: 0.95rem;
+}
+
+.form-group .error-msg {
+    color: #d32f2f;
+    padding: 0.5rem 0;
+    margin-top: 0.4rem;
+    border-radius: 0;
+    font-size: 0.85rem;
+    border-left: none;
+    display: block;
+    background: transparent !important;
+}
+
+.input-error {
+    border-color: #d32f2f !important;
+    background-color: transparent !important;
 }
 
 /* ===== FOOTER ===== */

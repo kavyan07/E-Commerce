@@ -1,0 +1,474 @@
+/**
+ * Phase 3 - Client-Side Interactions CSS
+ * Styles for form validations, error messages, and interactive elements
+ */
+
+/* ============================================================
+   FORM INPUT STYLING
+   ============================================================ */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    transition: border-color 0.3s ease, background-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Focus state */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* Error state */
+.input-error {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ============================================================
+   ERROR MESSAGE STYLING
+   ============================================================ */
+
+.error-msg {
+    display: block;
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+.success-msg {
+    display: block;
+    color: #10b981;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   SHIPPING OPTIONS STYLING
+   ============================================================ */
+
+.shipping-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+    margin-bottom: 1rem;
+}
+
+.shipping-option input[type="radio"] {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+}
+
+.shipping-option label {
+    flex: 1;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.shipping-option label strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.shipping-option label small {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Hover state */
+.shipping-option:hover {
+    border-color: #d1d5db;
+    background-color: #f3f4f6;
+}
+
+/* Active state */
+.shipping-option.active {
+    background-color: #f0f9ff;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.shipping-option.active label strong {
+    color: #4361ee;
+}
+
+/* ============================================================
+   CART INTERACTIONS
+   ============================================================ */
+
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity button:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.quantity button:active {
+    background: #e5e7eb;
+}
+
+.quantity input {
+    width: 52px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.quantity input:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* Disable input number arrows for better UX */
+.quantity input::-webkit-outer-spin-button,
+.quantity input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* ============================================================
+   PRODUCT DETAIL PAGE
+   ============================================================ */
+
+#productImage {
+    transition: opacity 0.3s ease;
+}
+
+/* Thumbnail gallery styling */
+.product-thumbnail {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.product-thumbnail:hover {
+    opacity: 1;
+    border-color: #d1d5db;
+}
+
+.product-thumbnail.active {
+    opacity: 1;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* ============================================================
+   PRODUCT LISTING PAGE
+   ============================================================ */
+
+#productCount {
+    font-weight: bold;
+    color: #4361ee;
+    transition: color 0.2s ease;
+}
+
+/* Smooth hide/show for filtered products */
+.card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   BUTTON STATES
+   ============================================================ */
+
+.remove-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+    background: #fecaca;
+    border-color: #dc2626;
+    color: #991b1b;
+}
+
+.remove-btn:active {
+    transform: scale(0.98);
+}
+
+/* ============================================================
+   FORM SECTION STYLING
+   ============================================================ */
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+.form-section h2 {
+    font-size: 1.25rem;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: white;
+    color: #1f2937;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+/* ============================================================
+   CART ITEM STYLING
+   ============================================================ */
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.cart-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background: white;
+    flex-shrink: 0;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details h3 {
+    color: #1f2937;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.item-variant {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.item-price {
+    color: #4361ee;
+    font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .shipping-option {
+        padding: 1rem;
+    }
+
+    .form-section {
+        padding: 1rem;
+    }
+
+    .checkout-layout {
+        flex-direction: column;
+    }
+
+    .quantity {
+        gap: 0.25rem;
+    }
+
+    .quantity button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.875rem;
+    }
+
+    .quantity input {
+        width: 44px;
+        font-size: 0.8125rem;
+    }
+}
+
+/* ============================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================ */
+
+/* Focus visible for keyboard navigation */
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible {
+    outline: 2px solid #4361ee;
+    outline-offset: 2px;
+}
+
+/* Ensure sufficient color contrast */
+.form-group label {
+    color: #1f2937;
+    /* AAA contrast with white background */
+}
+
+/* Visible focus for buttons */
+.remove-btn:focus-visible {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+
+.quantity button:focus-visible {
+    outline: 2px solid #4361ee;
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   ANIMATION UTILITIES
+   ============================================================ */
+
+.error-msg,
+.success-msg {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.form-group.error input {
+    animation: shake 0.5s ease-in-out;
+}

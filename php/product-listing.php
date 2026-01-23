@@ -124,13 +124,16 @@ if ($sort === 'price-low') {
     </div>
 
     <script>
-        // Basic client-side filtering to improve UX (keeps server-side stable)
+        // Client-side filtering and sorting with product count updates
         (function(){
             const searchInput = document.getElementById('searchInput');
             const categoryFilter = document.getElementById('categoryFilter');
             const sortFilter = document.getElementById('sortFilter');
             const productGrid = document.getElementById('productGrid');
 
+            /**
+             * Apply search and category filters
+             */
             function applyFilters(){
                 const q = searchInput.value.toLowerCase();
                 const cat = categoryFilter.value;
@@ -140,24 +143,48 @@ if ($sort === 'price-low') {
                     const name = item.querySelector('.product-name').textContent.toLowerCase();
                     const desc = item.querySelector('.product-meta').textContent.toLowerCase();
                     const matchesSearch = name.includes(q) || desc.includes(q);
-                    const matchesCat = !cat || (item.querySelector('.product-meta').textContent.toLowerCase().includes(cat) || item.querySelector('.product-name').textContent.toLowerCase().includes(cat));
-                    if (matchesSearch && matchesCat) { item.style.display = ''; visible++; } else { item.style.display = 'none'; }
+                    const matchesCat = !cat || (desc.includes(cat) || name.includes(cat));
+                    if (matchesSearch && matchesCat) { 
+                        item.style.display = ''; 
+                        visible++; 
+                    } else { 
+                        item.style.display = 'none'; 
+                    }
                 });
+                // Update product count (handled by EasyCart module)
                 document.getElementById('productCount').textContent = visible;
             }
 
+            /**
+             * Apply sorting
+             */
+            function applySorting(){
+                const items = Array.from(productGrid.querySelectorAll('.card'));
+                const sortValue = sortFilter.value;
+                
+                if (sortValue === 'price-low') {
+                    items.sort((a, b) => {
+                        const priceA = parseInt(a.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''));
+                        const priceB = parseInt(b.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''));
+                        return priceA - priceB;
+                    });
+                } else if (sortValue === 'price-high') {
+                    items.sort((a, b) => {
+                        const priceA = parseInt(a.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''));
+                        const priceB = parseInt(b.querySelector('.product-price').textContent.replace(/[^0-9]/g, ''));
+                        return priceB - priceA;
+                    });
+                }
+                
+                // Re-append items in new order
+                items.forEach(item => productGrid.appendChild(item));
+                applyFilters(); // Reapply filters after sorting
+            }
+
+            // Event listeners
             searchInput.addEventListener('input', applyFilters);
             categoryFilter.addEventListener('change', applyFilters);
-            sortFilter.addEventListener('change', function(){
-                // simple client-side sort by price
-                const items = Array.from(productGrid.querySelectorAll('.card'));
-                if (this.value === 'price-low') {
-                    items.sort((a,b)=> parseInt(a.querySelector('.product-price').textContent.replace(/[^0-9]/g,'')) - parseInt(b.querySelector('.product-price').textContent.replace(/[^0-9]/g,'')));
-                } else if (this.value === 'price-high') {
-                    items.sort((a,b)=> parseInt(b.querySelector('.product-price').textContent.replace(/[^0-9]/g,'')) - parseInt(a.querySelector('.product-price').textContent.replace(/[^0-9]/g,'')));
-                }
-                items.forEach(i=>productGrid.appendChild(i));
-            });
+            sortFilter.addEventListener('change', applySorting);
         })();
     </script>
 

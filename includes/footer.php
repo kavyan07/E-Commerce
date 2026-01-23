@@ -24,5 +24,8 @@
             <p>&copy; <?php echo date('Y'); ?> EasyCart - All Rights Reserved</p>
         </div>
     </footer>
+    
+    <!-- Phase 3: Client-Side Interactions JavaScript -->
+    <script src="../js/ecommerce.js"></script>
 </body>
 </html>

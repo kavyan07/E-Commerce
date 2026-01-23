@@ -98,7 +98,10 @@ if (!$product) {
     </div>
 
     <script>
+        // Quantity control for product detail page
+        // This works alongside EasyCart.initProductDetailInteractions()
         let quantity = 1;
+        
         function changeQuantity(delta) {
             quantity = Math.max(1, quantity + delta);
             document.getElementById('quantity').textContent = quantity;

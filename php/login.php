@@ -43,30 +43,59 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <script>
-        // Login logic (keeps original localStorage approach)
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const msgDiv = document.getElementById('message');
-            msgDiv.innerHTML = "";
+        // localStorage-based login with form validation
+        (function() {
+            const form = document.getElementById('loginForm');
+            if (!form) return;
+            
+            // Store reference for later use
+            form._hasInlineHandler = true;
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const msgDiv = document.getElementById('message');
+                msgDiv.innerHTML = "";
 
-            const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
+                // Basic validation
+                if (!email || !password) {
+                    msgDiv.innerHTML = '<p class="error-msg">Email and password are required.</p>';
+                    return;
+                }
 
-            if (!user) {
-                msgDiv.innerHTML = '<p class="error-msg">Invalid email or password.</p>';
-                return;
-            }
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    msgDiv.innerHTML = '<p class="error-msg">Please enter a valid email address.</p>';
+                    return;
+                }
 
-            // Store login info
-            localStorage.setItem('easycart_loggedInUser', JSON.stringify(user));
-            msgDiv.innerHTML = '<p class="success-msg">Login successful! Redirecting to home...</p>';
+                // Password validation
+                if (!password || password.length === 0) {
+                    msgDiv.innerHTML = '<p class="error-msg">Password is required.</p>';
+                    return;
+                }
 
-            setTimeout(function() {
-                window.location.href = 'index.php';
-            }, 1000);
-        });
+                const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (!user) {
+                    msgDiv.innerHTML = '<p class="error-msg">Invalid email or password.</p>';
+                    return;
+                }
+
+                // Store login info
+                localStorage.setItem('easycart_loggedInUser', JSON.stringify(user));
+                msgDiv.innerHTML = '<p class="success-msg">Login successful! Redirecting to home...</p>';
+
+                // Redirect to home after delay
+                setTimeout(function() {
+                    window.location.href = 'index.php';
+                }, 1000);
+            }, { once: false });
+        })();
     </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

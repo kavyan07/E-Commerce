@@ -211,8 +211,8 @@ nav ul li a.active::after {
 }
 
 .quantity button {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border: none;
     background: #fff;
     color: #1a1a2e;
@@ -221,12 +221,50 @@ nav ul li a.active::after {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .quantity button:hover {
     background: #4361ee;
     color: #fff;
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.quantity button:active {
+    transform: scale(0.95);
+}
+
+.quantity input {
+    width: 60px;
+    height: 40px;
+    border: 2px solid #e0e0e0 !important;
+    text-align: center !important;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    margin: 0 !important;
+    color: #1a1a2e;
+}
+
+/* ensure the form inside .quantity lays out controls horizontally */
+.quantity > form {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.quantity input:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 5px rgba(67, 97, 238, 0.2);
 }
 
 .quantity span {
@@ -247,21 +285,26 @@ nav ul li a.active::after {
 
 /* ===== REMOVE BUTTON ===== */
 .remove-btn {
-    background: transparent;
+    background: #fff;
     color: #ff6b6b;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 8px;
+    border: 2px solid #ff6b6b;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .remove-btn:hover {
-    background: #fee2e2;
-    color: #dc2626;
+    background: #ff6b6b;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.remove-btn:active {
+    transform: translateY(0);
 }
 
 /* ===== PRICE SUMMARY ===== */

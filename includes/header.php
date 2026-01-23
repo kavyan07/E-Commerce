@@ -21,6 +21,8 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
+    <!-- Phase 3: Client-Side Interactions CSS -->
+    <link rel="stylesheet" href="../css/phase3-interactions.css">
    <?php if ($page_css): ?>
     <link rel="stylesheet" href="../css/<?php echo htmlspecialchars($page_css); ?>">
 <?php endif; ?>

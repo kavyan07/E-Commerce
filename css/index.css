@@ -14,7 +14,7 @@ body {
 /* Navbar */
 nav {
     background-color: #1a1a2e;
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -84,9 +84,9 @@ nav a.active::after {
 
 /* Layout */
 .container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding: 2rem 1rem 3rem;
+    padding: 3rem 2rem 4rem;
 }
 
 /* Hero section */
@@ -529,41 +529,40 @@ nav a.active::after {
 }
 
 .brand-card {
-    background: white;
+    position: relative;
     border-radius: 16px;
     overflow: hidden;
+    height: 220px;
     text-decoration: none;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-}
-
-.brand-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .brand-image {
-    height: 140px;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .brand-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.5s;
 }
 
 .brand-card:hover .brand-image img {
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 .brand-name {
-    padding: 1rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
     text-align: center;
     font-weight: 600;
-    color: #1a1a2e;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 /* Newsletter */
@@ -635,8 +634,9 @@ footer {
 }
 
 .footer-content {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
+    padding: 0 2rem;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     gap: 3rem;
@@ -685,9 +685,9 @@ footer {
 }
 
 .footer-bottom {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding-top: 1.5rem;
+    padding: 1.5rem 2rem 0;
     text-align: center;
 }
 
@@ -698,6 +698,7 @@ footer {
 
 /* Responsive */
 @media (max-width: 1024px) {
+
     .card-grid,
     .category-grid,
     .brand-grid {
@@ -778,6 +779,7 @@ footer {
 }
 
 @media (max-width: 480px) {
+
     .card-grid,
     .category-grid,
     .brand-grid {

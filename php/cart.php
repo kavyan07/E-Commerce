@@ -104,16 +104,16 @@ $cart = $_SESSION['cart'];
                                 <p class="item-price-mobile"><?php echo format_price($p['price']); ?></p>
                             </div>
                             <div class="quantity">
-                                <form method="post" style="display:inline-block;">
+                                <form method="post">
                                     <input type="hidden" name="action" value="update">
                                     <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-                                    <button type="submit" onclick="this.form.quantity.value=Math.max(1,parseInt(this.form.quantity.value)-1); return true;">-</button>
+                                    <button type="button" class="qty-decrease">-</button>
                                     <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="1" style="width:52px; text-align:center;">
-                                    <button type="submit" onclick="this.form.quantity.value=parseInt(this.form.quantity.value)+1; return true;">+</button>
+                                    <button type="button" class="qty-increase">+</button>
                                 </form>
                             </div>
                             <div class="item-price"><?php echo format_price($p['price'] * $item['quantity']); ?></div>
-                            <form method="post" style="display:inline-block;">
+                            <form method="post">
                                 <input type="hidden" name="action" value="remove">
                                 <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
                                 <button type="submit" class="remove-btn" title="Remove item">Remove</button>

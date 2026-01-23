@@ -61,52 +61,96 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <script>
-        // Simple localStorage-based signup
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // IMPORTANT: This script must run AFTER the form submission to override validation
+        // localStorage-based signup with form validation
+        (function() {
+            const form = document.getElementById('signupForm');
+            if (!form) return;
+            
+            // Store reference for later use
+            form._hasInlineHandler = true;
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
 
-            const first = document.getElementById('firstname').value.trim();
-            const last = document.getElementById('lastname').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const password = document.getElementById('password').value;
-            const confirm = document.getElementById('confirmpassword').value;
-            const msgDiv = document.getElementById('message');
-            msgDiv.innerHTML = "";
+                const first = document.getElementById('firstname').value.trim();
+                const last = document.getElementById('lastname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value;
+                const confirm = document.getElementById('confirmpassword').value;
+                const msgDiv = document.getElementById('message');
+                msgDiv.innerHTML = "";
 
-            if (password !== confirm) {
-                msgDiv.innerHTML = '<p class="error-msg">Passwords do not match.</p>';
-                return;
-            }
+                // Basic validation
+                if (!first || !last || !email || !phone || !password || !confirm) {
+                    msgDiv.innerHTML = '<p class="error-msg">All fields are required.</p>';
+                    return;
+                }
 
-            // Read current users from localStorage
-            const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    msgDiv.innerHTML = '<p class="error-msg">Please enter a valid email address.</p>';
+                    return;
+                }
 
-            // Check if email already exists
-            const exists = users.find(u => u.email === email);
-            if (exists) {
-                msgDiv.innerHTML = '<p class="error-msg">User with this email already exists. Please login.</p>';
-                return;
-            }
+                // Phone validation (exactly 10 digits, not all zeros, cannot start with 0)
+                const phoneDigits = phone.replace(/\D/g, '');
+                if (phoneDigits.length !== 10) {
+                    msgDiv.innerHTML = '<p class="error-msg">Phone number must be exactly 10 digits.</p>';
+                    return;
+                }
+                if (phoneDigits === '0000000000') {
+                    msgDiv.innerHTML = '<p class="error-msg">Phone number cannot be all zeros.</p>';
+                    return;
+                }
+                if (phoneDigits.startsWith('0')) {
+                    msgDiv.innerHTML = '<p class="error-msg">Phone number cannot start with 0.</p>';
+                    return;
+                }
 
-            // Add new user
-            users.push({
-                firstName: first,
-                lastName: last,
-                email: email,
-                phone: phone,
-                password: password
-            });
+                // Password validation (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char)
+                const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    msgDiv.innerHTML = '<p class="error-msg">Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character (@$!%*?&).</p>';
+                    return;
+                }
 
-            localStorage.setItem('easycart_users', JSON.stringify(users));
+                if (password !== confirm) {
+                    msgDiv.innerHTML = '<p class="error-msg">Passwords do not match.</p>';
+                    return;
+                }
 
-            msgDiv.innerHTML = '<p class="success-msg">Account created successfully! Redirecting to login...</p>';
+                // Read current users from localStorage
+                const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
 
-            // Redirect to login
-            setTimeout(function() {
-                window.location.href = 'login.php';
-            }, 1500);
-        });
+                // Check if email already exists
+                const exists = users.find(u => u.email === email);
+                if (exists) {
+                    msgDiv.innerHTML = '<p class="error-msg">User with this email already exists. Please login.</p>';
+                    return;
+                }
+
+                // Add new user
+                users.push({
+                    firstName: first,
+                    lastName: last,
+                    email: email,
+                    phone: phone,
+                    password: password
+                });
+
+                localStorage.setItem('easycart_users', JSON.stringify(users));
+
+                msgDiv.innerHTML = '<p class="success-msg">Account created successfully! Redirecting to login...</p>';
+
+                // Redirect to login after delay
+                setTimeout(function() {
+                    window.location.href = 'login.php';
+                }, 1500);
+            }, { once: false });
+        })();
     </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

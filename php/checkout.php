@@ -14,40 +14,40 @@ $total = $subtotal + $shipping + $tax;
         <h1>🛍️ Checkout</h1>
 
         <div class="checkout-layout">
-            <form class="checkout-form">
+            <form class="checkout-form" id="checkoutForm">
                 <!-- Shipping Address -->
                 <div class="form-section">
                     <h2>Shipping Address</h2>
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" placeholder="Enter your full name" required>
+                        <input type="text" name="fullname" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" placeholder="Enter your email" required>
+                        <input type="email" name="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="tel" placeholder="Enter your phone number" required>
+                        <input type="tel" name="phone" placeholder="Enter your phone number" required>
                     </div>
                     <div class="form-group">
                         <label>Street Address</label>
-                        <input type="text" placeholder="Enter your street address" required>
+                        <input type="text" name="address" placeholder="Enter your street address" required>
                     </div>
                 </div>
 
                 <!-- Shipping Options -->
                 <div class="form-section">
                     <h2>Shipping Options</h2>
-                    <div class="shipping-option">
-                        <input type="radio" id="standard" name="shipping" value="standard" checked>
+                    <div class="shipping-option active">
+                        <input type="radio" id="standard" name="shipping" value="standard" checked data-cost="299">
                         <label for="standard">
                             <strong>Standard Shipping - ₹299</strong><br>
                             <small>Delivery in 5-7 business days</small>
                         </label>
                     </div>
                     <div class="shipping-option">
-                        <input type="radio" id="express" name="shipping" value="express">
+                        <input type="radio" id="express" name="shipping" value="express" data-cost="799">
                         <label for="express">
                             <strong>Express Shipping - ₹799</strong><br>
                             <small>Delivery in 2-3 business days</small>
@@ -87,7 +87,7 @@ $total = $subtotal + $shipping + $tax;
 
                     <div class="summary-total"><span>Total Amount:</span><span><?php echo format_price($total); ?></span></div>
 
-                    <button class="place-order-btn">Place Order</button>
+                    <button type="button" class="place-order-btn" onclick="document.getElementById('checkoutForm').dispatchEvent(new Event('submit'))">Place Order</button>
                 <?php endif; ?>
             </div>
         </div>
