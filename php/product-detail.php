@@ -1,112 +1,193 @@
 <?php
-$page_title = 'Product Details - EasyCart';
-$page_css = 'product-detail.css';
-require_once __DIR__ . '/../includes/header.php';
+session_start();
+require_once __DIR__ . '/../data.php';
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$product = isset($products[$id]) ? $products[$id] : null;
+$product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$product = $products[$product_id] ?? null;
+
 if (!$product) {
-    echo '<h2>Product not found.</h2>';
+    echo '<div class="container"><p>Product not found</p></div>';
     require_once __DIR__ . '/../includes/footer.php';
     exit;
 }
+
+$page_title = htmlspecialchars($product['name']) . ' - EasyCart';
+$page_css = 'product-detail.css';
+require_once __DIR__ . '/../includes/header.php';
+
+// Use actual product images from data
+$productImages = $product['images'] ?? [$product['image']];
 ?>
 
-    <div class="container">
-        <a href="product-listing.php" class="back-link">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            Back to Products
-        </a>
+    <section class="page-header">
+        <div class="header-content">
+            <h1><?php echo htmlspecialchars($product['name']); ?></h1>
+            <div class="breadcrumb">
+                <a href="index.php">Home</a>
+                <span>/</span>
+                <a href="product-listing.php">Products</a>
+                <span>/</span>
+                <span><?php echo htmlspecialchars($product['name']); ?></span>
+            </div>
+        </div>
+    </section>
 
-        <div class="product-detail">
-            <div class="product-image-section">
-                <img id="productImage" src="../<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+    <div class="container">
+        <div class="product-detail-layout">
+            <div class="product-images">
+                <div class="main-image">
+                    <img id="productImage" src="../<?php echo htmlspecialchars($product['image']); ?>" 
+                         alt="<?php echo htmlspecialchars($product['name']); ?>">
+                </div>
+                <div class="thumbnail-gallery">
+                    <?php foreach ($productImages as $index => $img): ?>
+                        <img class="product-thumbnail <?php echo $index === 0 ? 'active' : ''; ?>" 
+                             src="../<?php echo htmlspecialchars($img); ?>" 
+                             data-image="../<?php echo htmlspecialchars($img); ?>"
+                             alt="Product image <?php echo $index + 1; ?>"
+                             style="cursor: pointer; border-radius: 8px;">
+                    <?php endforeach; ?>
+                </div>
             </div>
 
             <div class="product-info">
-                <div class="product-badge" id="productBadge"><?php echo htmlspecialchars($product['badge']); ?></div>
-                <h1 id="productName"><?php echo htmlspecialchars($product['name']); ?></h1>
-
-                <div class="rating" id="productRating">
-                    <?php for ($i=0;$i<5;$i++): ?>
-                        <?php if ($i < $product['rating']): ?>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <?php else: ?>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        <?php endif; ?>
-                    <?php endfor; ?>
+                <?php if (!empty($product['badge'])): ?>
+                    <span class="product-badge"><?php echo htmlspecialchars($product['badge']); ?></span>
+                <?php endif; ?>
+                
+                <h1><?php echo htmlspecialchars($product['name']); ?></h1>
+                
+                <div class="rating">
+                    <div class="stars">
+                        <?php echo str_repeat('★', $product['rating']) . str_repeat('☆', 5 - $product['rating']); ?>
+                    </div>
+                    <span class="reviews">(<?php echo $product['reviews']; ?> reviews)</span>
                 </div>
 
                 <div class="price-section">
-                    <span class="price" id="productPrice"><?php echo format_price($product['price']); ?></span>
-                    <span class="original-price" id="originalPrice"><?php echo format_price($product['originalPrice']); ?></span>
-                    <span class="discount" id="discountPercent"><?php echo round((($product['originalPrice']-$product['price'])/$product['originalPrice'])*100); ?>% OFF</span>
+                    <span class="current-price"><?php echo format_price($product['price']); ?></span>
+                    <span class="original-price"><?php echo format_price($product['originalPrice']); ?></span>
+                    <span class="discount">
+                        <?php 
+                        $discount = round((($product['originalPrice'] - $product['price']) / $product['originalPrice']) * 100);
+                        echo $discount . '% OFF';
+                        ?>
+                    </span>
                 </div>
 
-                <p class="description" id="productDescription"><?php echo htmlspecialchars($product['description']); ?></p>
+                <p class="description"><?php echo htmlspecialchars($product['description']); ?></p>
 
-                <div class="quantity-section">
-                    <label>Quantity:</label>
-                    <div class="quantity-controls">
-                        <button type="button" onclick="changeQuantity(-1)">-</button>
-                        <span id="quantity">1</span>
-                        <button type="button" onclick="changeQuantity(1)">+</button>
+                <form method="POST" action="cart.php" class="add-to-cart-form" onsubmit="return validateQuantity(this)">
+                    <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <div class="quantity">
+                            <button type="button" class="qty-decrease" onclick="decreaseQty(event)">−</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="100" readonly>
+                            <button type="button" class="qty-increase" onclick="increaseQty(event)">+</button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="action-buttons">
-                    <form id="addToCartForm" method="post" action="cart.php" style="display:inline-block;">
-                        <input type="hidden" name="action" value="add">
-                        <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                        <input type="hidden" name="quantity" id="formQuantity" value="1">
-                        <button type="submit" class="add-to-cart">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            Add to Cart
-                        </button>
-                    </form>
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
 
-                    <form method="post" action="cart.php" style="display:inline-block;">
-                        <input type="hidden" name="action" value="add">
-                        <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                        <input type="hidden" name="quantity" id="buyNowQty" value="1">
-                        <button type="submit" class="buy-now">Buy Now</button>
-                    </form>
-                </div>
-
-                <div class="delivery-info">
-                    <div class="delivery-item">
+                <div class="product-features">
+                    <div class="feature">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>Secure & Safe</span>
+                    </div>
+                    <div class="feature">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="1" y="3" width="15" height="13"></rect>
                             <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                             <circle cx="5.5" cy="18.5" r="2.5"></circle>
                             <circle cx="18.5" cy="18.5" r="2.5"></circle>
                         </svg>
-                        <div>
-                            <strong>Free Delivery</strong>
-                            <p>Orders above Rs. 999</p>
-                        </div>
+                        <span>Fast Delivery</span>
+                    </div>
+                    <div class="feature">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                        <span>30-day Returns</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <section class="related-products">
+            <h2>You Might Also Like</h2>
+            <div class="product-grid">
+                <?php 
+                $relatedCount = 0;
+                foreach ($products as $p): 
+                    if ($p['id'] !== $product['id'] && $relatedCount < 4):
+                        $relatedCount++;
+                ?>
+                    <div class="card">
+                        <?php if (!empty($p['badge'])): ?>
+                            <div class="product-badge"><?php echo htmlspecialchars($p['badge']); ?></div>
+                        <?php endif; ?>
+                        <div class="product-image">
+                            <img src="../<?php echo htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['name']); ?>">
+                        </div>
+                        <div class="card-content">
+                            <div class="product-name"><?php echo htmlspecialchars($p['name']); ?></div>
+                            <div class="product-price"><?php echo format_price($p['price']); ?></div>
+                            <a href="product-detail.php?id=<?php echo $p['id']; ?>" class="view-btn">View details</a>
+                        </div>
+                    </div>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
+            </div>
+        </section>
     </div>
 
     <script>
-        // Quantity control for product detail page
-        // This works alongside EasyCart.initProductDetailInteractions()
-        let quantity = 1;
-        
-        function changeQuantity(delta) {
-            quantity = Math.max(1, quantity + delta);
-            document.getElementById('quantity').textContent = quantity;
-            document.getElementById('formQuantity').value = quantity;
-            document.getElementById('buyNowQty').value = quantity;
+        // Local quantity control functions for product detail page
+        function decreaseQty(e) {
+            e.preventDefault();
+            const input = document.getElementById('quantity');
+            const current = parseInt(input.value) || 1;
+            input.value = Math.max(1, current - 1);
+        }
+
+        function increaseQty(e) {
+            e.preventDefault();
+            const input = document.getElementById('quantity');
+            const current = parseInt(input.value) || 1;
+            input.value = current + 1;
+        }
+
+        function validateQuantity(form) {
+            const qty = parseInt(document.getElementById('quantity').value) || 0;
+            if (qty < 1) {
+                alert('Please select a valid quantity');
+                return false;
+            }
+            return true;
+        }
+
+        // Initialize image gallery when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initProductGallery();
+        });
+
+        function initProductGallery() {
+            // Thumbnail image switching
+            document.querySelectorAll('.product-thumbnail').forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById('productImage').src = this.getAttribute('data-image');
+                });
+            });
         }
     </script>
 

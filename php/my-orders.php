@@ -1,7 +1,15 @@
 <?php
+session_start();
 $page_title = 'My Orders - EasyCart';
 $page_css = 'my-orders.css';
 require_once __DIR__ . '/../includes/header.php';
+
+// Sample orders data
+$orders = [
+    ['order_id' => '#ORD001', 'date' => '2024-01-15', 'items' => 2, 'total' => 8999, 'status' => 'Delivered'],
+    ['order_id' => '#ORD002', 'date' => '2024-01-10', 'items' => 1, 'total' => 4999, 'status' => 'Shipped'],
+    ['order_id' => '#ORD003', 'date' => '2024-01-05', 'items' => 3, 'total' => 12499, 'status' => 'Processing']
+];
 ?>
 
     <div class="container">

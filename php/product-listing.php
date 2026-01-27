@@ -1,4 +1,5 @@
 <?php
+session_start();
 $page_title = 'EasyCart - Products';
 $page_css = 'product-listing.css';
 require_once __DIR__ . '/../includes/header.php';

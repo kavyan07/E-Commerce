@@ -5,68 +5,115 @@
 $products = [
     1 => [
         'id' => 1,
-        'name' => 'Premium Sneakers',
-        'category' => 'fashion',
-        'brand' => 'Nike',
-        'price' => 2499,
-        'originalPrice' => 3999,
-        'image' => 'public/images/products/sneakers.jpg',
+        'name' => 'Gaming Console',
+        'category' => 'electronics',
+        'brand' => 'Sony',
+        'price' => 49999,
+        'originalPrice' => 59999,
+        'image' => 'public/images/products/console.jpg',
+        'images' => ['public/images/products/console.jpg', 'public/images/brands/sony.jpg', 'public/images/categories/electronics.jpg'],
         'rating' => 5,
-        'reviews' => 128,
+        'reviews' => 156,
         'badge' => 'Best Seller',
-        'description' => 'Experience ultimate comfort with our Premium Sneakers.'
+        'description' => 'Next-gen gaming console with 4K support and exclusive games.'
     ],
     2 => [
         'id' => 2,
-        'name' => 'Smart Watch',
+        'name' => 'Premium Smartwatch',
         'category' => 'electronics',
         'brand' => 'Apple',
-        'price' => 4999,
-        'originalPrice' => 7499,
+        'price' => 12999,
+        'originalPrice' => 16999,
         'image' => 'public/images/products/smartwatch.jpg',
-        'rating' => 4,
-        'reviews' => 89,
+        'images' => ['public/images/products/smartwatch.jpg', 'public/images/brands/apple.jpg', 'public/images/categories/electronics.jpg'],
+        'rating' => 4.8,
+        'reviews' => 234,
         'badge' => 'New',
-        'description' => 'Stay connected with our feature-packed Smart Watch.'
+        'description' => 'Stay connected with fitness tracking and health monitoring.'
     ],
     3 => [
         'id' => 3,
-        'name' => 'Wireless Earbuds',
+        'name' => 'Wireless Earbuds Pro',
         'category' => 'electronics',
         'brand' => 'Sony',
-        'price' => 1999,
-        'originalPrice' => 2999,
+        'price' => 4999,
+        'originalPrice' => 6999,
         'image' => 'public/images/products/earbuds.jpg',
-        'rating' => 5,
-        'reviews' => 256,
-        'badge' => '',
-        'description' => 'Immersive audio with active noise cancellation.'
+        'images' => ['public/images/products/earbuds.jpg', 'public/images/brands/sony.jpg', 'public/images/categories/electronics.jpg'],
+        'rating' => 4.9,
+        'reviews' => 312,
+        'badge' => 'Top Rated',
+        'description' => 'Premium wireless earbuds with active noise cancellation.'
     ],
     4 => [
         'id' => 4,
-        'name' => 'Winter Jacket',
+        'name' => 'Sports Jacket Elite',
         'category' => 'fashion',
-        'brand' => 'North',
-        'price' => 3299,
+        'brand' => 'Nike',
+        'price' => 3499,
         'originalPrice' => 5499,
         'image' => 'public/images/products/jacket.jpg',
-        'rating' => 4,
-        'reviews' => 74,
+        'images' => ['public/images/products/jacket.jpg', 'public/images/brands/nike.jpg', 'public/images/categories/fashion.jpg'],
+        'rating' => 4.6,
+        'reviews' => 89,
         'badge' => 'Sale',
-        'description' => 'Stay warm in style with our premium Winter Jacket.'
+        'description' => 'Comfortable and durable sports jacket for all seasons.'
     ],
     5 => [
         'id' => 5,
         'name' => 'Premium Phone Case',
-        'category' => 'accessories',
-        'brand' => 'Generic',
-        'price' => 499,
-        'originalPrice' => 999,
+        'category' => 'electronics',
+        'brand' => 'Apple',
+        'price' => 1299,
+        'originalPrice' => 1999,
         'image' => 'public/images/products/phonecase.jpg',
-        'rating' => 4,
-        'reviews' => 42,
+        'images' => ['public/images/products/phonecase.jpg', 'public/images/brands/apple.jpg', 'public/images/categories/electronics.jpg'],
+        'rating' => 4.4,
+        'reviews' => 167,
         'badge' => '',
-        'description' => 'Protect your phone with our durable Premium Phone Case.'
+        'description' => 'Protect your phone with premium materials and design.'
+    ],
+    6 => [
+        'id' => 6,
+        'name' => 'Mechanical Keyboard RGB',
+        'category' => 'electronics',
+        'brand' => 'Samsung',
+        'price' => 8999,
+        'originalPrice' => 12999,
+        'image' => 'public/images/products/keyboard.jpg',
+        'images' => ['public/images/products/keyboard.jpg', 'public/images/brands/samsung.jpg', 'public/images/categories/electronics.jpg'],
+        'rating' => 4.7,
+        'reviews' => 198,
+        'badge' => 'Featured',
+        'description' => 'RGB mechanical keyboard with fast switches and customization.'
+    ],
+    7 => [
+        'id' => 7,
+        'name' => 'Precision Gaming Mouse',
+        'category' => 'electronics',
+        'brand' => 'Samsung',
+        'price' => 2999,
+        'originalPrice' => 4499,
+        'image' => 'public/images/products/mouse.jpg',
+        'images' => ['public/images/products/mouse.jpg', 'public/images/brands/samsung.jpg', 'public/images/categories/electronics.jpg'],
+        'rating' => 4.5,
+        'reviews' => 145,
+        'badge' => '',
+        'description' => 'High precision gaming mouse with customizable buttons.'
+    ],
+    8 => [
+        'id' => 8,
+        'name' => 'Ergonomic Laptop Stand',
+        'category' => 'home',
+        'brand' => 'Samsung',
+        'price' => 2499,
+        'originalPrice' => 3999,
+        'image' => 'public/images/products/laptop-stand.jpg',
+        'images' => ['public/images/products/laptop-stand.jpg', 'public/images/brands/samsung.jpg', 'public/images/categories/home.jpg'],
+        'rating' => 4.6,
+        'reviews' => 122,
+        'badge' => 'Bestseller',
+        'description' => 'Ergonomic laptop stand for better posture and productivity.'
     ],
 ];
 
@@ -104,7 +151,9 @@ $orders = [
     ],
 ];
 
-// Helper: format currency
-function format_price($v) {
-    return 'Rs. ' . number_format((int)$v);
+// Helper function to format prices
+if (!function_exists('format_price')) {
+    function format_price($amount) {
+        return 'Rs. ' . number_format($amount, 0, ',', ',');
+    }
 }

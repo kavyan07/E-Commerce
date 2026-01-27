@@ -1,18 +1,9 @@
 <?php
+session_start();
 $page_title = "EasyCart - Home";
 $page_css = "index.css";
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <!-- EXACT copy from working index.html -->
-    <link rel="stylesheet" href="../css/index.css">
-</head>
-<body>
-<?php require_once __DIR__ . '/../includes/header.php'; // Navbar only ?>
 <div class="container">
 
     <!-- Hero section -->
