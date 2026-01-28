@@ -804,9 +804,17 @@ footer p {
     font-weight: 600;
 }
 
-.item-details h3 {
-    color: #ffffff;
-    margin-bottom: 5px;
+.item-details h3,
+.item-details .product-name {
+    color: #1a1a2e !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.75rem !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    line-height: 1.4 !important;
+    text-transform: none !important;
 }
 
 /* --- BUTTON SIZES --- */

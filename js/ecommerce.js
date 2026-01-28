@@ -113,10 +113,11 @@ function validateSignupForm() {
     }
 
     const firstnameInput = form.querySelector('#firstname');
-    const lastnameInput = form.querySelector('#lastname');
-    const emailInput = form.querySelector('#email');
-    const passwordInput = form.querySelector('#password');
-    const confirmInput = form.querySelector('#confirmpassword');
+    const lastnameInput  = form.querySelector('#lastname');
+    const emailInput     = form.querySelector('#email');
+    const phoneInput     = form.querySelector('#phone');
+    const passwordInput  = form.querySelector('#password');
+    const confirmInput   = form.querySelector('#confirmpassword');
 
     // Real-time validation for each field
     if (firstnameInput) {
@@ -134,6 +135,21 @@ function validateSignupForm() {
     if (emailInput) {
         emailInput.addEventListener('blur', function () {
             validateEmailField(this);
+        });
+    }
+
+    if (phoneInput) {
+        // Restrict to digits and max 10 on input
+        phoneInput.addEventListener('input', function () {
+            let digits = this.value.replace(/\D/g, '');
+            if (digits.length > 10) {
+                digits = digits.slice(0, 10);
+            }
+            this.value = digits;
+        });
+
+        phoneInput.addEventListener('blur', function () {
+            validatePhoneField(this);
         });
     }
 
@@ -173,6 +189,10 @@ function validateSignupForm() {
         }
 
         if (emailInput && !validateEmailField(emailInput)) {
+            isValid = false;
+        }
+
+        if (phoneInput && !validatePhoneField(phoneInput)) {
             isValid = false;
         }
 
@@ -303,6 +323,38 @@ function validatePasswordField(input) {
         showInputError(input, 'Password must be at least 6 characters');
         return false;
     }
+
+    // Password strength indicator for signup form
+    const strengthEl = document.getElementById('passwordStrength');
+    const hintEl = document.getElementById('passwordHint');
+    if (strengthEl) {
+        const hasUpper = /[A-Z]/.test(value);
+        const hasNumber = /\d/.test(value);
+        const hasSpecial = /[@$!%*?&]/.test(value);
+        let score = 0;
+        if (hasUpper) score++;
+        if (hasNumber) score++;
+        if (hasSpecial) score++;
+
+        let strengthText = 'Weak';
+        let strengthColor = '#ef4444';
+
+        if (value.length >= 8 && score === 3) {
+            strengthText = 'Strong';
+            strengthColor = '#22c55e';
+        } else if (value.length >= 6 && score >= 2) {
+            strengthText = 'Medium';
+            strengthColor = '#f97316';
+        }
+
+        strengthEl.textContent = 'Password strength: ' + strengthText;
+        strengthEl.style.color = strengthColor;
+
+        if (hintEl) {
+            hintEl.textContent = 'Add uppercase, number, and special character to make password strong';
+        }
+    }
+
     clearInputError(input);
     return true;
 }
@@ -311,6 +363,10 @@ function validateNameField(input, fieldName) {
     const value = input.value.trim();
     if (!value) {
         showInputError(input, fieldName + ' is required');
+        return false;
+    }
+    if (!/^[A-Za-z ]+$/.test(value)) {
+        showInputError(input, 'Special characters are not allowed in name');
         return false;
     }
     if (value.length < 2) {
@@ -375,9 +431,22 @@ function isValidEmail(email) {
     return regex.test(email);
 }
 
+// Generic phone validator (used on checkout)
 function isValidPhone(phone) {
     const digits = phone.replace(/\D/g, '');
+    // For checkout we allow 10–13 digits
     return digits.length >= 10 && digits.length <= 13;
+}
+
+// Strict 10-digit validator for signup form
+function validatePhoneField(input) {
+    const digits = input.value.replace(/\D/g, '');
+    if (digits.length !== 10) {
+        showInputError(input, 'Phone number must be exactly 10 digits');
+        return false;
+    }
+    clearInputError(input);
+    return true;
 }
 
 function showInputError(input, message) {
@@ -569,9 +638,9 @@ function updateCartTotals() {
         }
     });
 
-    // Calculate tax and shipping
+    // Calculate tax and shipping (cart page uses default Standard Shipping cost)
     const tax = subtotal * 0.18;
-    const shipping = subtotal > 0 ? 100 : 0;
+    const shipping = subtotal > 0 ? 350 : 0;
     const total = subtotal + tax + shipping;
 
     // Update summary display using IDs if available, otherwise use selectors
@@ -689,8 +758,8 @@ function updateOrderTotal() {
 
     if (!totalEl || !shippingEl) return;
 
-    // Get shipping cost from radio value
-    const shippingCost = parseInt(selectedRadio.value) || 0;
+    // Get shipping cost from data attribute (pre-calculated in PHP)
+    const shippingCost = parseInt(selectedRadio.getAttribute('data-cost')) || 0;
 
     // Get subtotal and tax from existing summary
     const subtotalRow = document.querySelector('.summary-row');

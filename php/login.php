@@ -1,6 +1,40 @@
 <?php
+session_start();
 $page_title = 'Login - EasyCart';
 $page_css = 'login.css';
+
+// Ensure users array exists (for demo signup storage)
+if (!isset($_SESSION['users']) || !is_array($_SESSION['users'])) {
+    $_SESSION['users'] = [];
+}
+
+$login_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim((string)($_POST['email'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+
+    if ($email === '' || $password === '') {
+        $login_error = 'Email and password are required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $login_error = 'Please enter a valid email address.';
+    } else {
+        if (isset($_SESSION['users'][$email]) && $_SESSION['users'][$email]['password'] === $password) {
+            // Successful login – store user in session
+            $_SESSION['user'] = $_SESSION['users'][$email];
+            // Set success flash message
+            $_SESSION['flash_message'] = [
+                'text' => 'Login successful. Welcome back!',
+                'type' => 'success'
+            ];
+            header('Location: index.php');
+            exit;
+        } else {
+            $login_error = 'Invalid email or password.';
+        }
+    }
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -9,17 +43,19 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="login-card">
             <h1>🔐 Login</h1>
 
-            <div id="message"></div>
+            <?php if ($login_error): ?>
+                <div class="error-msg" style="margin-bottom:1rem;"><?php echo htmlspecialchars($login_error); ?></div>
+            <?php endif; ?>
 
-            <form id="loginForm">
+            <form id="loginForm" method="POST" novalidate>
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password" name="password" required>
                 </div>
 
                 <div class="remember-me">
@@ -41,61 +77,5 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         </div>
     </div>
-
-    <script>
-        // localStorage-based login with form validation
-        (function() {
-            const form = document.getElementById('loginForm');
-            if (!form) return;
-            
-            // Store reference for later use
-            form._hasInlineHandler = true;
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
-                const msgDiv = document.getElementById('message');
-                msgDiv.innerHTML = "";
-
-                // Basic validation
-                if (!email || !password) {
-                    msgDiv.innerHTML = '<p class="error-msg">Email and password are required.</p>';
-                    return;
-                }
-
-                // Email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    msgDiv.innerHTML = '<p class="error-msg">Please enter a valid email address.</p>';
-                    return;
-                }
-
-                // Password validation
-                if (!password || password.length === 0) {
-                    msgDiv.innerHTML = '<p class="error-msg">Password is required.</p>';
-                    return;
-                }
-
-                const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
-                const user = users.find(u => u.email === email && u.password === password);
-
-                if (!user) {
-                    msgDiv.innerHTML = '<p class="error-msg">Invalid email or password.</p>';
-                    return;
-                }
-
-                // Store login info
-                localStorage.setItem('easycart_loggedInUser', JSON.stringify(user));
-                msgDiv.innerHTML = '<p class="success-msg">Login successful! Redirecting to home...</p>';
-
-                // Redirect to home after delay
-                setTimeout(function() {
-                    window.location.href = 'index.php';
-                }, 1000);
-            }, { once: false });
-        })();
-    </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

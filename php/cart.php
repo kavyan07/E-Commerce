@@ -1,11 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/../data.php';
-$page_title = 'Shopping Cart - EasyCart';
-$page_css = 'cart.css';
-require_once __DIR__ . '/../includes/header.php';
 
-// Handle cart operations
+// Handle cart operations BEFORE any output
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $productId = (int)($_POST['product_id'] ?? 0);
@@ -44,6 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+// Now set page variables and include header (after all redirects are handled)
+$page_title = 'Shopping Cart - EasyCart';
+$page_css = 'cart.css';
+require_once __DIR__ . '/../includes/header.php';
 
 // Calculate cart totals
 $cartItems = $_SESSION['cart'] ?? [];
@@ -94,7 +96,7 @@ $total = $subtotal + $tax + $shipping;
                                 <img src="../<?php echo $itemImage; ?>" alt="<?php echo $itemName; ?>">
                             </div>
                             <div class="item-details">
-                                <h3><?php echo $itemName; ?></h3>
+                                <h3 class="product-name"><?php echo $itemName; ?></h3>
                                 <div class="item-price" data-price="<?php echo $itemPrice; ?>"><?php echo format_price($itemPrice); ?> each</div>
                             </div>
                             <div class="item-actions">

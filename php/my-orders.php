@@ -2,19 +2,27 @@
 session_start();
 $page_title = 'My Orders - EasyCart';
 $page_css = 'my-orders.css';
+
+// Restrict access to logged-in users only
+if (empty($_SESSION['user'])) {
+    header('Location: login.php');
+    exit;
+}
+
 require_once __DIR__ . '/../includes/header.php';
 
-// Sample orders data
-$orders = [
-    ['order_id' => '#ORD001', 'date' => '2024-01-15', 'items' => 2, 'total' => 8999, 'status' => 'Delivered'],
-    ['order_id' => '#ORD002', 'date' => '2024-01-10', 'items' => 1, 'total' => 4999, 'status' => 'Shipped'],
-    ['order_id' => '#ORD003', 'date' => '2024-01-05', 'items' => 3, 'total' => 12499, 'status' => 'Processing']
-];
+// Orders are stored in session after checkout (no database)
+$orders = $_SESSION['orders'] ?? [];
 ?>
 
     <div class="container">
         <h1>📋 My Orders</h1>
 
+        <?php if (empty($orders)): ?>
+            <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;">
+                No orders yet. Place an order from the cart to see it here.
+            </p>
+        <?php else: ?>
         <div class="orders-table">
             <table>
             <thead>
@@ -35,12 +43,13 @@ $orders = [
                         <td class="order-items"><?php echo htmlspecialchars($o['items']) . ' item' . ($o['items']>1? 's':''); ?></td>
                         <td class="order-total"><?php echo format_price($o['total']); ?></td>
                         <td><span class="status"><?php echo htmlspecialchars($o['status']); ?></span></td>
-                        <td><button class="action-btn">View</button></td>
+                        <td><button class="action-btn" type="button">View</button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
+        <?php endif; ?>
     </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -1,6 +1,67 @@
 <?php
+session_start();
 $page_title = 'Signup - EasyCart';
 $page_css = 'signup.css';
+
+// Simple in-memory user store using PHP session (no database)
+if (!isset($_SESSION['users']) || !is_array($_SESSION['users'])) {
+    $_SESSION['users'] = [];
+}
+
+$signup_error = '';
+$signup_success = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $first    = trim((string)($_POST['firstname'] ?? ''));
+    $last     = trim((string)($_POST['lastname'] ?? ''));
+    $email    = trim((string)($_POST['email'] ?? ''));
+    $phone    = trim((string)($_POST['phone'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+    $confirm  = (string)($_POST['confirmpassword'] ?? '');
+
+    // Basic required-field validation
+    if ($first === '' || $last === '' || $email === '' || $phone === '' || $password === '' || $confirm === '') {
+        $signup_error = 'All fields are required.';
+    } elseif (!preg_match('/^[A-Za-z ]+$/', $first) || !preg_match('/^[A-Za-z ]+$/', $last)) {
+        $signup_error = 'Special characters are not allowed in name.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $signup_error = 'Please enter a valid email address.';
+    } else {
+        $digits = preg_replace('/\D/', '', $phone);
+        if (strlen($digits) !== 10) {
+            $signup_error = 'Phone number must be exactly 10 digits.';
+        } elseif ($digits === '0000000000' || $digits[0] === '0') {
+            $signup_error = 'Please enter a valid phone number.';
+        } elseif ($password !== $confirm) {
+            $signup_error = 'Passwords do not match.';
+        }
+    }
+
+    // If still no error, check if user exists and then store
+    if ($signup_error === '') {
+        if (isset($_SESSION['users'][$email])) {
+            $signup_error = 'User with this email already exists. Please login.';
+        } else {
+            $_SESSION['users'][$email] = [
+                'firstName' => $first,
+                'lastName'  => $last,
+                'email'     => $email,
+                'phone'     => $digits,
+                // Demo only – in real apps, hash passwords!
+                'password'  => $password,
+            ];
+            // Set success flash message
+            $_SESSION['flash_message'] = [
+                'text' => 'Account created successfully. Please log in.',
+                'type' => 'success'
+            ];
+            // Redirect to login after successful signup
+            header('Location: login.php');
+            exit;
+        }
+    }
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -9,38 +70,44 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="signup-card">
             <h1>Create Account</h1>
 
-            <div id="message"></div>
+            <?php if ($signup_error): ?>
+                <div class="error-msg" style="margin-bottom:1rem;"><?php echo htmlspecialchars($signup_error); ?></div>
+            <?php endif; ?>
 
-            <form id="signupForm">
+            <form id="signupForm" method="POST" novalidate>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstname">First Name</label>
-                        <input type="text" id="firstname" required>
+                        <input type="text" id="firstname" name="firstname" required>
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" id="lastname" required>
+                        <input type="text" id="lastname" name="lastname" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" required>
+                    <input type="tel" id="phone" name="phone" maxlength="10" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password" name="password" required>
+                    <small id="passwordStrength" class="password-strength"></small>
+                    <small id="passwordHint" class="password-hint">
+                        Add uppercase, number, and special character to make password strong.
+                    </small>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmpassword">Confirm Password</label>
-                    <input type="password" id="confirmpassword" required>
+                    <input type="password" id="confirmpassword" name="confirmpassword" required>
                 </div>
 
                 <div class="terms">
@@ -60,98 +127,4 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-    <script>
-        // IMPORTANT: This script must run AFTER the form submission to override validation
-        // localStorage-based signup with form validation
-        (function() {
-            const form = document.getElementById('signupForm');
-            if (!form) return;
-            
-            // Store reference for later use
-            form._hasInlineHandler = true;
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const first = document.getElementById('firstname').value.trim();
-                const last = document.getElementById('lastname').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const phone = document.getElementById('phone').value.trim();
-                const password = document.getElementById('password').value;
-                const confirm = document.getElementById('confirmpassword').value;
-                const msgDiv = document.getElementById('message');
-                msgDiv.innerHTML = "";
-
-                // Basic validation
-                if (!first || !last || !email || !phone || !password || !confirm) {
-                    msgDiv.innerHTML = '<p class="error-msg">All fields are required.</p>';
-                    return;
-                }
-
-                // Email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    msgDiv.innerHTML = '<p class="error-msg">Please enter a valid email address.</p>';
-                    return;
-                }
-
-                // Phone validation (exactly 10 digits, not all zeros, cannot start with 0)
-                const phoneDigits = phone.replace(/\D/g, '');
-                if (phoneDigits.length !== 10) {
-                    msgDiv.innerHTML = '<p class="error-msg">Phone number must be exactly 10 digits.</p>';
-                    return;
-                }
-                if (phoneDigits === '0000000000') {
-                    msgDiv.innerHTML = '<p class="error-msg">Phone number cannot be all zeros.</p>';
-                    return;
-                }
-                if (phoneDigits.startsWith('0')) {
-                    msgDiv.innerHTML = '<p class="error-msg">Phone number cannot start with 0.</p>';
-                    return;
-                }
-
-                // Password validation (min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char)
-                const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                if (!passwordRegex.test(password)) {
-                    msgDiv.innerHTML = '<p class="error-msg">Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character (@$!%*?&).</p>';
-                    return;
-                }
-
-                if (password !== confirm) {
-                    msgDiv.innerHTML = '<p class="error-msg">Passwords do not match.</p>';
-                    return;
-                }
-
-                // Read current users from localStorage
-                const users = JSON.parse(localStorage.getItem('easycart_users') || '[]');
-
-                // Check if email already exists
-                const exists = users.find(u => u.email === email);
-                if (exists) {
-                    msgDiv.innerHTML = '<p class="error-msg">User with this email already exists. Please login.</p>';
-                    return;
-                }
-
-                // Add new user
-                users.push({
-                    firstName: first,
-                    lastName: last,
-                    email: email,
-                    phone: phone,
-                    password: password
-                });
-
-                localStorage.setItem('easycart_users', JSON.stringify(users));
-
-                msgDiv.innerHTML = '<p class="success-msg">Account created successfully! Redirecting to login...</p>';
-
-                // Redirect to login after delay
-                setTimeout(function() {
-                    window.location.href = 'login.php';
-                }, 1500);
-            }, { once: false });
-        })();
-    </script>
-
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
-
