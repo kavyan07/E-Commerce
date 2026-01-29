@@ -165,14 +165,18 @@ $productImages = $product['images'] ?? [$product['image']];
             input.value = current + 1;
         }
 
-        function validateQuantity(form) {
-            const qty = parseInt(document.getElementById('quantity').value) || 0;
-            if (qty < 1) {
-                alert('Please select a valid quantity');
-                return false;
-            }
-            return true;
-        }
+       function validateQuantity(form) {
+    const qtyInput = document.getElementById('quantity');
+    const qty = parseInt(qtyInput.value) || 0;
+    if (qty < 1 || isNaN(qty)) {
+        alert('Please select a valid quantity (minimum 1)');
+        qtyInput.focus();
+        qtyInput.select();  // Highlight for easy edit
+        return false;
+    }
+    return true;
+}
+
 
         // Initialize image gallery when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {

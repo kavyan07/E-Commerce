@@ -11,9 +11,55 @@ function initializeApp() {
     // Initialize all modules
     initFormValidations();
     initCartInteractions();
+    initAddToCartAjax();
     initProductGallery();
     initShippingOptions();
     initProductListingEnhancements();
+}
+
+// ============================================
+// AJAX HELPERS (SESSION-BASED)
+// ============================================
+
+async function postJson(url, data) {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    const json = await res.json().catch(() => null);
+    if (!res.ok || !json) {
+        throw new Error((json && json.message) ? json.message : 'Server error');
+    }
+    return json;
+}
+
+function setCartBadge(count) {
+    const badge = document.getElementById('cartCount');
+    if (!badge) return;
+    const n = parseInt(count, 10) || 0;
+    if (n <= 0) {
+        badge.remove();
+        return;
+    }
+    badge.textContent = String(n);
+}
+
+function formatPriceFromInt(amount) {
+    const n = parseInt(amount, 10) || 0;
+    return formatPrice(n);
+}
+
+function setLoading(el, isLoading) {
+    if (!el) return;
+    if (isLoading) {
+        el.dataset._oldText = el.textContent;
+        el.textContent = '...';
+        el.disabled = true;
+    } else {
+        if (el.dataset._oldText) el.textContent = el.dataset._oldText;
+        el.disabled = false;
+    }
 }
 
 // ============================================
@@ -113,11 +159,11 @@ function validateSignupForm() {
     }
 
     const firstnameInput = form.querySelector('#firstname');
-    const lastnameInput  = form.querySelector('#lastname');
-    const emailInput     = form.querySelector('#email');
-    const phoneInput     = form.querySelector('#phone');
-    const passwordInput  = form.querySelector('#password');
-    const confirmInput   = form.querySelector('#confirmpassword');
+    const lastnameInput = form.querySelector('#lastname');
+    const emailInput = form.querySelector('#email');
+    const phoneInput = form.querySelector('#phone');
+    const passwordInput = form.querySelector('#password');
+    const confirmInput = form.querySelector('#confirmpassword');
 
     // Real-time validation for each field
     if (firstnameInput) {
@@ -395,7 +441,7 @@ function validatePasswordMatch(confirmInput, passwordInput) {
 
 function validateCheckoutField(input, fieldName, fieldType) {
     const value = input.value.trim();
-    
+
     if (!value) {
         showInputError(input, fieldName + ' is required');
         return false;
@@ -475,7 +521,7 @@ function clearInputError(input) {
     input.style.borderColor = '';
 
     const formGroup = input.closest('.form-group');
-    const errorMsg = formGroup 
+    const errorMsg = formGroup
         ? formGroup.querySelector('.field-error-msg')
         : input.nextElementSibling;
 
@@ -507,6 +553,8 @@ function initCartInteractions() {
     const cartItems = document.getElementById('cartItems');
     if (!cartItems) return;
 
+    const cartApiUrl = 'ajax-cart.php';
+
     // Event delegation for quantity controls and remove buttons
     cartItems.addEventListener('click', function (e) {
         // Quantity decrease button
@@ -515,14 +563,24 @@ function initCartInteractions() {
             const form = e.target.closest('.quantity-form');
             const input = form.querySelector('input[name="quantity"]');
             const currentQty = parseInt(input.value) || 1;
-            
+
             if (currentQty > 1) {
                 const newQty = currentQty - 1;
                 input.value = newQty;
                 updateCartItemPrice(form, newQty);
                 updateCartTotals();
-                // Submit to update server-side for persistence
-                form.submit();
+
+                const productId = parseInt(form.querySelector('input[name="product_id"]').value, 10) || 0;
+                setLoading(e.target, true);
+                postJson(cartApiUrl, { action: 'update', product_id: productId, quantity: newQty })
+                    .then((json) => {
+                        applyCartSummary(json.summary);
+                        setCartBadge(json.summary.cartCount);
+                    })
+                    .catch((err) => {
+                        showToast(err.message || 'Failed to update cart', 'error');
+                    })
+                    .finally(() => setLoading(e.target, false));
             }
         }
         // Quantity increase button
@@ -532,12 +590,22 @@ function initCartInteractions() {
             const input = form.querySelector('input[name="quantity"]');
             const currentQty = parseInt(input.value) || 1;
             const newQty = currentQty + 1;
-            
+
             input.value = newQty;
             updateCartItemPrice(form, newQty);
             updateCartTotals();
-            // Submit to update server-side for persistence
-            form.submit();
+
+            const productId = parseInt(form.querySelector('input[name="product_id"]').value, 10) || 0;
+            setLoading(e.target, true);
+            postJson(cartApiUrl, { action: 'update', product_id: productId, quantity: newQty })
+                .then((json) => {
+                    applyCartSummary(json.summary);
+                    setCartBadge(json.summary.cartCount);
+                })
+                .catch((err) => {
+                    showToast(err.message || 'Failed to update cart', 'error');
+                })
+                .finally(() => setLoading(e.target, false));
         }
         // Remove button
         else if (e.target.classList.contains('remove-btn')) {
@@ -545,24 +613,33 @@ function initCartInteractions() {
             if (confirm('Are you sure you want to remove this item from cart?')) {
                 const form = e.target.closest('form');
                 const cartItem = form.closest('.cart-item');
-                
+                const productId = parseInt(form.querySelector('input[name="product_id"]').value, 10) || 0;
+
                 // Remove from UI immediately
                 cartItem.style.transition = 'opacity 0.3s ease';
                 cartItem.style.opacity = '0';
-                
+
                 setTimeout(() => {
                     cartItem.remove();
                     updateCartTotals();
-                    
+
                     // Check if cart is empty
                     const remainingItems = cartItems.querySelectorAll('.cart-item');
                     if (remainingItems.length === 0) {
-                        location.reload(); // Reload to show empty cart message
+                        renderEmptyCartState();
                     }
                 }, 300);
-                
-                // Submit to remove from server-side
-                form.submit();
+
+                setLoading(e.target, true);
+                postJson(cartApiUrl, { action: 'remove', product_id: productId })
+                    .then((json) => {
+                        applyCartSummary(json.summary);
+                        setCartBadge(json.summary.cartCount);
+                    })
+                    .catch((err) => {
+                        showToast(err.message || 'Failed to remove item', 'error');
+                    })
+                    .finally(() => setLoading(e.target, false));
             }
         }
     });
@@ -583,16 +660,43 @@ function initCartInteractions() {
     updateCartTotals();
 }
 
+function applyCartSummary(summary) {
+    if (!summary) return;
+    const subtotalEl = document.getElementById('cartSubtotal');
+    const taxEl = document.getElementById('cartTax');
+    const shippingEl = document.getElementById('cartShipping');
+    const totalEl = document.getElementById('cartTotal');
+
+    if (subtotalEl) subtotalEl.textContent = formatPriceFromInt(summary.subtotal);
+    if (taxEl) taxEl.textContent = formatPriceFromInt(summary.tax);
+    if (shippingEl) shippingEl.textContent = formatPriceFromInt(summary.shipping);
+    if (totalEl) totalEl.textContent = formatPriceFromInt(summary.total);
+}
+
+function renderEmptyCartState() {
+    const container = document.querySelector('.cart-section');
+    const summaryWrapper = document.querySelector('.cart-summary-wrapper');
+    if (summaryWrapper) summaryWrapper.remove();
+    if (!container) return;
+    container.innerHTML = `
+        <div class="empty-cart">
+            <h2>Your cart is empty</h2>
+            <p>Start shopping to add items to your cart</p>
+            <a href="product-listing.php" class="checkout-btn browse-btn">Browse Products</a>
+        </div>
+    `;
+}
+
 function updateCartItemPrice(form, quantity) {
     const cartItem = form.closest('.cart-item');
     const itemPriceEl = cartItem.querySelector('.item-price');
     const itemTotalEl = cartItem.querySelector('.item-total');
-    
+
     if (!itemPriceEl || !itemTotalEl) return;
 
     // Get price from data attribute or extract from text
     let pricePerItem = parseFloat(itemPriceEl.getAttribute('data-price'));
-    
+
     if (!pricePerItem || isNaN(pricePerItem)) {
         // Fallback: extract from text
         const priceText = itemPriceEl.textContent;
@@ -622,7 +726,7 @@ function updateCartTotals() {
         if (itemTotalEl) {
             // Try to get from data attribute first
             let itemTotal = parseFloat(itemTotalEl.getAttribute('data-total'));
-            
+
             if (!itemTotal || isNaN(itemTotal)) {
                 // Fallback: extract from text
                 const totalText = itemTotalEl.textContent;
@@ -633,7 +737,7 @@ function updateCartTotals() {
                     itemTotal = 0;
                 }
             }
-            
+
             subtotal += itemTotal;
         }
     });
@@ -644,14 +748,14 @@ function updateCartTotals() {
     const total = subtotal + tax + shipping;
 
     // Update summary display using IDs if available, otherwise use selectors
-    const subtotalEl = document.getElementById('cartSubtotal') || 
-                      document.querySelector('.summary-row:nth-of-type(1) span:last-child');
-    const taxEl = document.getElementById('cartTax') || 
-                  document.querySelector('.summary-row:nth-of-type(2) span:last-child');
-    const shippingEl = document.getElementById('cartShipping') || 
-                      document.querySelector('.summary-row:nth-of-type(3) span:last-child');
-    const totalEl = document.getElementById('cartTotal') || 
-                    document.querySelector('.summary-row.total span:last-child');
+    const subtotalEl = document.getElementById('cartSubtotal') ||
+        document.querySelector('.summary-row:nth-of-type(1) span:last-child');
+    const taxEl = document.getElementById('cartTax') ||
+        document.querySelector('.summary-row:nth-of-type(2) span:last-child');
+    const shippingEl = document.getElementById('cartShipping') ||
+        document.querySelector('.summary-row:nth-of-type(3) span:last-child');
+    const totalEl = document.getElementById('cartTotal') ||
+        document.querySelector('.summary-row.total span:last-child');
 
     if (subtotalEl) {
         subtotalEl.textContent = formatPrice(subtotal);
@@ -681,6 +785,41 @@ function updateCartTotals() {
 
 function formatPrice(amount) {
     return 'Rs. ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+// ============================================
+// ADD TO CART (AJAX) – PDP/PLP FORMS
+// ============================================
+
+function initAddToCartAjax() {
+    const forms = document.querySelectorAll('form.add-to-cart-form');
+    if (!forms || forms.length === 0) return;
+
+    const cartApiUrl = 'ajax-cart.php';
+
+    forms.forEach((form) => {
+        form.addEventListener('submit', function (e) {
+            // allow fallback if fetch not available
+            if (!window.fetch) return;
+            e.preventDefault();
+
+            const productId = parseInt(form.querySelector('input[name="product_id"]').value, 10) || 0;
+            const qtyInput = form.querySelector('input[name="quantity"]');
+            const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 1) : 1;
+            const btn = form.querySelector('button[type="submit"]');
+
+            setLoading(btn, true);
+            postJson(cartApiUrl, { action: 'add', product_id: productId, quantity: qty })
+                .then((json) => {
+                    setCartBadge(json.summary.cartCount);
+                    showToast('Added to cart', 'success');
+                })
+                .catch((err) => {
+                    showToast(err.message || 'Failed to add to cart', 'error');
+                })
+                .finally(() => setLoading(btn, false));
+        });
+    });
 }
 
 // ============================================
@@ -721,8 +860,12 @@ function initProductGallery() {
 function initShippingOptions() {
     const shippingRadios = document.querySelectorAll('input[name="shipping"]');
 
+    console.log('Initializing shipping options, found:', shippingRadios.length, 'radio buttons');
+
     shippingRadios.forEach(radio => {
         radio.addEventListener('change', function () {
+            console.log('Shipping option changed to:', this.value);
+
             // Visual highlight selected option
             document.querySelectorAll('.shipping-option').forEach(opt => {
                 opt.classList.remove('selected', 'active');
@@ -733,61 +876,61 @@ function initShippingOptions() {
                 parent.classList.add('selected', 'active');
             }
 
-            // Update total if cost changes
-            updateOrderTotal();
+            // Update totals dynamically via server (AJAX)
+            updateOrderTotalAjax();
         });
     });
 
     // Set initial active state
     const checkedRadio = document.querySelector('input[name="shipping"]:checked');
     if (checkedRadio) {
+        console.log('Initial shipping option checked:', checkedRadio.value);
         const parent = checkedRadio.closest('.shipping-option');
         if (parent) {
             parent.classList.add('selected', 'active');
         }
-        updateOrderTotal();
+        updateOrderTotalAjax();
+    } else {
+        console.log('No shipping option pre-selected');
     }
 }
 
-function updateOrderTotal() {
-    const selectedRadio = document.querySelector('input[name="shipping"]:checked');
-    if (!selectedRadio) return;
-
+function updateOrderTotalAjax() {
+    // Only runs on checkout page (needs these ids)
     const totalEl = document.getElementById('totalAmount');
     const shippingEl = document.getElementById('shippingCost');
-
-    if (!totalEl || !shippingEl) return;
-
-    // Get shipping cost from data attribute (pre-calculated in PHP)
-    const shippingCost = parseInt(selectedRadio.getAttribute('data-cost')) || 0;
-
-    // Get subtotal and tax from existing summary
-    const subtotalRow = document.querySelector('.summary-row');
-    const taxRow = document.querySelectorAll('.summary-row')[1];
-    
-    let subtotal = 0;
-    let tax = 0;
-
-    if (subtotalRow) {
-        const subtotalText = subtotalRow.querySelector('span:last-child').textContent;
-        const subtotalMatch = subtotalText.match(/[\d,]+/);
-        if (subtotalMatch) {
-            subtotal = parseInt(subtotalMatch[0].replace(/,/g, ''));
-        }
+    const taxEl = document.getElementById('taxAmount');
+    if (!totalEl || !shippingEl) {
+        console.log('Checkout elements not found');
+        return;
     }
 
-    if (taxRow) {
-        const taxText = taxRow.querySelector('span:last-child').textContent;
-        const taxMatch = taxText.match(/[\d,]+/);
-        if (taxMatch) {
-            tax = parseInt(taxMatch[0].replace(/,/g, ''));
-        }
+    const selectedRadio = document.querySelector('input[name="shipping"]:checked');
+    if (!selectedRadio) {
+        console.log('No shipping option selected');
+        return;
     }
+    const method = selectedRadio.value || 'standard';
 
-    const total = subtotal + tax + shippingCost;
+    console.log('Updating shipping method to:', method);
 
-    shippingEl.textContent = formatPrice(shippingCost);
-    totalEl.textContent = formatPrice(total);
+    postJson('ajax-checkout.php', { shipping: method })
+        .then((json) => {
+            console.log('Received shipping update response:', json);
+            const s = json.summary;
+            shippingEl.textContent = formatPriceFromInt(s.shipping);
+            if (taxEl) taxEl.textContent = formatPriceFromInt(s.tax);
+            totalEl.textContent = formatPriceFromInt(s.total);
+        })
+        .catch((err) => {
+            console.error('AJAX Error updating shipping:', err);
+            // Fallback if showToast is not available
+            if (typeof showToast === 'function') {
+                showToast(err.message || 'Failed to update shipping', 'error');
+            } else {
+                alert(err.message || 'Failed to update shipping');
+            }
+        });
 }
 
 // ============================================

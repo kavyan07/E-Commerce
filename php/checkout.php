@@ -358,7 +358,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                 <div class="summary-row">
                     <span>GST (18% on Subtotal + Shipping<?php echo $couponDiscount ? ' - Discount' : ''; ?>)</span>
-                    <span><?php echo format_price($tax); ?></span>
+                    <span id="taxAmount"><?php echo format_price($tax); ?></span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>

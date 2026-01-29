@@ -57,7 +57,7 @@ foreach ($cartItems as $item) {
     $itemCount += $item['quantity'];
 }
 
-$shipping = !empty($cartItems) ? 100 : 0;
+$shipping = !empty($cartItems) ? 350 : 0;
 $tax = $subtotal * 0.18;
 $total = $subtotal + $tax + $shipping;
 ?>
