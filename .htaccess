@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# Redirect direct access to .php files to their clean URL (excluding index.php)
+RewriteCond %{THE_REQUEST} \s/+(.+)\.php[\s?] [NC]
+RewriteCond %{REQUEST_URI} !index\.php [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Prevent direct access to any .php file if it's not index.php
+RewriteCond %{REQUEST_URI} \.php$
+RewriteCond %{REQUEST_URI} !index\.php$
+RewriteRule .* - [F,L]
+
+# Route all requests to index.php if the file/folder doesn't exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [L,QSA]

@@ -1,9 +1,3 @@
-<?php
-session_start();
-$page_title = "EasyCart - Home";
-$page_css = "index.css";
-require_once __DIR__ . '/../includes/header.php';
-?>
 <div class="container">
 
     <!-- Hero section -->
@@ -11,15 +5,16 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="hero-left">
             <div class="hero-tag">New Year Sale - Up to 50% Off</div>
             <h1>Shop everything you love in one place with EasyCart.</h1>
-            <p>Discover trending fashion, powerful electronics, stylish home essentials and more at amazing prices. Start your shopping journey now.</p>
+            <p>Discover trending fashion, powerful electronics, stylish home essentials and more at amazing prices.
+                Start your shopping journey now.</p>
             <div class="hero-buttons">
-                <a href="product-listing.php" class="btn-primary">Start Shopping</a>
-                <a href="signup.php" class="btn-secondary">Create Account</a>
+                <a href="product-listing" class="btn-primary">Start Shopping</a>
+                <a href="signup" class="btn-secondary">Create Account</a>
             </div>
         </div>
         <div class="hero-right">
             <div class="hero-image">
-                <img src="../public/images/products/sneakers.jpg" alt="Featured Product">
+                <img src="images/products/sneakers.jpg" alt="Featured Product">
             </div>
             <div class="hero-stats">
                 <div class="stat-item">
@@ -74,7 +69,9 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="ad-card ad-rated">
             <div class="ad-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
                 </svg>
             </div>
             <h3>Top Rated</h3>
@@ -122,7 +119,9 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="feature">
                 <div class="feature-icon">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
                     </svg>
                 </div>
                 <h3>Customer First</h3>
@@ -135,22 +134,31 @@ require_once __DIR__ . '/../includes/header.php';
     <section class="featured-section">
         <div class="section-header">
             <h2>Featured Products</h2>
-            <a href="product-listing.php" class="view-all">View All</a>
+            <a href="product-listing" class="view-all">View All</a>
         </div>
         <div class="card-grid">
             <?php foreach (array_slice($products, 0, 4) as $p): ?>
                 <div class="card">
                     <?php if (!empty($p['badge'])): ?>
-                        <div class="product-badge"><?php echo htmlspecialchars($p['badge']); ?></div>
+                        <div class="product-badge">
+                            <?php echo htmlspecialchars($p['badge']); ?>
+                        </div>
                     <?php endif; ?>
                     <div class="product-image">
-                        <img src="../<?php echo htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['name']); ?>">
+                        <img src="<?php echo htmlspecialchars($p['image']); ?>"
+                            alt="<?php echo htmlspecialchars($p['name']); ?>">
                     </div>
                     <div class="card-content">
-                        <div class="product-name"><?php echo htmlspecialchars($p['name']); ?></div>
-                        <div class="product-price"><?php echo format_price($p['price']); ?></div>
-                        <div class="product-meta"><?php echo htmlspecialchars($p['description']); ?></div>
-                        <a href="product-detail.php?id=<?php echo $p['id']; ?>" class="view-btn">View details</a>
+                        <div class="product-name">
+                            <?php echo htmlspecialchars($p['name']); ?>
+                        </div>
+                        <div class="product-price">
+                            <?php echo format_price($p['price']); ?>
+                        </div>
+                        <div class="product-meta">
+                            <?php echo htmlspecialchars($p['description']); ?>
+                        </div>
+                        <a href="product-detail?id=<?php echo $p['id']; ?>" class="view-btn">View details</a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -161,39 +169,39 @@ require_once __DIR__ . '/../includes/header.php';
     <section class="categories-section">
         <div class="section-header">
             <h2>Popular Categories</h2>
-            <a href="product-listing.php" class="view-all">Browse All</a>
+            <a href="product-listing" class="view-all">Browse All</a>
         </div>
         <div class="category-grid">
-            <a href="product-listing.php" class="category-card">
+            <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="../public/images/categories/fashion.jpg" alt="Fashion">
+                    <img src="images/categories/fashion.jpg" alt="Fashion">
                 </div>
                 <div class="category-overlay">
                     <h3>Fashion</h3>
                     <span>50+ Products</span>
                 </div>
             </a>
-            <a href="product-listing.php" class="category-card">
+            <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="../public/images/categories/electronics.jpg" alt="Electronics">
+                    <img src="images/categories/electronics.jpg" alt="Electronics">
                 </div>
                 <div class="category-overlay">
                     <h3>Electronics</h3>
                     <span>30+ Products</span>
                 </div>
             </a>
-            <a href="product-listing.php" class="category-card">
+            <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="../public/images/categories/home.jpg" alt="Home & Kitchen">
+                    <img src="images/categories/home.jpg" alt="Home & Kitchen">
                 </div>
                 <div class="category-overlay">
                     <h3>Home & Kitchen</h3>
                     <span>25+ Products</span>
                 </div>
             </a>
-            <a href="product-listing.php" class="category-card">
+            <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="../public/images/categories/sports.jpg" alt="Sports & Fitness">
+                    <img src="images/categories/sports.jpg" alt="Sports & Fitness">
                 </div>
                 <div class="category-overlay">
                     <h3>Sports & Fitness</h3>
@@ -209,27 +217,27 @@ require_once __DIR__ . '/../includes/header.php';
             <h2>Popular Brands</h2>
         </div>
         <div class="brand-grid">
-            <a href="product-listing.php" class="brand-card">
+            <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="../public/images/brands/nike.jpg" alt="Nike">
+                    <img src="images/brands/nike.jpg" alt="Nike">
                 </div>
                 <div class="brand-name">Nike</div>
             </a>
-            <a href="product-listing.php" class="brand-card">
+            <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="../public/images/brands/apple.jpg" alt="Apple">
+                    <img src="images/brands/apple.jpg" alt="Apple">
                 </div>
                 <div class="brand-name">Apple</div>
             </a>
-            <a href="product-listing.php" class="brand-card">
+            <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="../public/images/brands/samsung.jpg" alt="Samsung">
+                    <img src="images/brands/samsung.jpg" alt="Samsung">
                 </div>
                 <div class="brand-name">Samsung</div>
             </a>
-            <a href="product-listing.php" class="brand-card">
+            <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="../public/images/brands/sony.jpg" alt="Sony">
+                    <img src="images/brands/sony.jpg" alt="Sony">
                 </div>
                 <div class="brand-name">Sony</div>
             </a>
@@ -254,5 +262,4 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </section>
 
-    </div>
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+</div>

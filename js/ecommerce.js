@@ -553,7 +553,7 @@ function initCartInteractions() {
     const cartItems = document.getElementById('cartItems');
     if (!cartItems) return;
 
-    const cartApiUrl = 'ajax-cart.php';
+    const cartApiUrl = 'ajax-cart';
 
     // Event delegation for quantity controls and remove buttons
     cartItems.addEventListener('click', function (e) {
@@ -742,44 +742,22 @@ function updateCartTotals() {
         }
     });
 
-    // Calculate tax and shipping (cart page uses default Standard Shipping cost)
-    const tax = subtotal * 0.18;
-    const shipping = subtotal > 0 ? 350 : 0;
-    const total = subtotal + tax + shipping;
+    // Calculate tax and shipping (now disabled as per user request)
+    const tax = 0;
+    const shipping = 0;
+    const total = subtotal;
 
-    // Update summary display using IDs if available, otherwise use selectors
-    const subtotalEl = document.getElementById('cartSubtotal') ||
-        document.querySelector('.summary-row:nth-of-type(1) span:last-child');
-    const taxEl = document.getElementById('cartTax') ||
-        document.querySelector('.summary-row:nth-of-type(2) span:last-child');
-    const shippingEl = document.getElementById('cartShipping') ||
-        document.querySelector('.summary-row:nth-of-type(3) span:last-child');
-    const totalEl = document.getElementById('cartTotal') ||
-        document.querySelector('.summary-row.total span:last-child');
+    // Update summary display
+    const subtotalEl = document.getElementById('cartSubtotal');
+    const totalEl = document.getElementById('cartTotal');
 
     if (subtotalEl) {
         subtotalEl.textContent = formatPrice(subtotal);
-        if (subtotalEl.hasAttribute('data-subtotal')) {
-            subtotalEl.setAttribute('data-subtotal', subtotal);
-        }
-    }
-    if (taxEl) {
-        taxEl.textContent = formatPrice(tax);
-        if (taxEl.hasAttribute('data-tax')) {
-            taxEl.setAttribute('data-tax', tax);
-        }
-    }
-    if (shippingEl) {
-        shippingEl.textContent = formatPrice(shipping);
-        if (shippingEl.hasAttribute('data-shipping')) {
-            shippingEl.setAttribute('data-shipping', shipping);
-        }
+        subtotalEl.setAttribute('data-subtotal', subtotal);
     }
     if (totalEl) {
         totalEl.textContent = formatPrice(total);
-        if (totalEl.hasAttribute('data-total')) {
-            totalEl.setAttribute('data-total', total);
-        }
+        totalEl.setAttribute('data-total', total);
     }
 }
 
@@ -795,7 +773,7 @@ function initAddToCartAjax() {
     const forms = document.querySelectorAll('form.add-to-cart-form');
     if (!forms || forms.length === 0) return;
 
-    const cartApiUrl = 'ajax-cart.php';
+    const cartApiUrl = 'ajax-cart';
 
     forms.forEach((form) => {
         form.addEventListener('submit', function (e) {
@@ -905,6 +883,7 @@ function updateOrderTotalAjax() {
         return;
     }
 
+    const radios = document.querySelectorAll('input[name="shipping"]');
     const selectedRadio = document.querySelector('input[name="shipping"]:checked');
     if (!selectedRadio) {
         console.log('No shipping option selected');
@@ -914,17 +893,45 @@ function updateOrderTotalAjax() {
 
     console.log('Updating shipping method to:', method);
 
-    postJson('ajax-checkout.php', { shipping: method })
+    postJson('ajax-checkout', { shipping: method })
         .then((json) => {
             console.log('Received shipping update response:', json);
             const s = json.summary;
+
+            // 1. Update overall totals
             shippingEl.textContent = formatPriceFromInt(s.shipping);
             if (taxEl) taxEl.textContent = formatPriceFromInt(s.tax);
             totalEl.textContent = formatPriceFromInt(s.total);
+
+            // 2. Handle disabled/enabled methods and costs in labels
+            const disabled = s.disabledMethods || [];
+            radios.forEach(radio => {
+                const parent = radio.closest('.shipping-option');
+                const isDisabled = disabled.includes(radio.value);
+
+                radio.disabled = isDisabled;
+                if (parent) {
+                    if (isDisabled) parent.classList.add('disabled');
+                    else parent.classList.remove('disabled');
+                }
+
+                // Update individual cost display in labels if needed
+                // (Optional but good for UX as subtotal changes might affect %-based costs)
+            });
+
+            // 3. Auto-switch selection if current became disabled
+            if (s.selectedMethod && s.selectedMethod !== method) {
+                const targetRadio = document.querySelector(`input[name="shipping"][value="${s.selectedMethod}"]`);
+                if (targetRadio) {
+                    targetRadio.checked = true;
+                    // Trigger visual update for selection
+                    radios.forEach(r => r.closest('.shipping-option')?.classList.remove('selected', 'active'));
+                    targetRadio.closest('.shipping-option')?.classList.add('selected', 'active');
+                }
+            }
         })
         .catch((err) => {
             console.error('AJAX Error updating shipping:', err);
-            // Fallback if showToast is not available
             if (typeof showToast === 'function') {
                 showToast(err.message || 'Failed to update shipping', 'error');
             } else {
@@ -1047,6 +1054,17 @@ function updateProductCount() {
         .shipping-option.active {
             background-color: rgba(247, 37, 133, 0.1);
             border-color: #f72585;
+        }
+
+        .shipping-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
+        .shipping-option.disabled input[type="radio"] {
+            cursor: not-allowed;
         }
 
         .shipping-option input[type="radio"] {
