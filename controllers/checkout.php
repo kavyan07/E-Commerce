@@ -1,5 +1,10 @@
 <?php
 // Checkout Controller
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['flash_message'] = ['text' => 'Please login to proceed to checkout.', 'type' => 'info'];
+    header('Location: login');
+    exit;
+}
 require_once ROOT_PATH . '/src/OrderDAO.php';
 
 // Get cart data
@@ -26,14 +31,22 @@ foreach ($cartItems as $item) {
     }
 }
 
-// Shipping rules
-function calculate_shipping_cost(string $method, float $subtotal): int
-{
-    return 0; // Keeping it simple/free as per original file which set shipping to 0
-}
+// Shipping costs configuration (Using global helper)
+$shippingCosts = [
+    'standard' => calculate_shipping_cost('standard', $subtotal),
+    'express' => calculate_shipping_cost('express', $subtotal),
+    'white_glove' => calculate_shipping_cost('white_glove', $subtotal),
+    'freight' => calculate_shipping_cost('freight', $subtotal)
+];
 
+// Shipping restrictions
 $disabledMethods = ($hasFreight || $expressTotal > 300) ? ['standard', 'express'] : ['white_glove', 'freight'];
-$selectedMethod = $_SESSION['shipping_method'] ?? (in_array('standard', $disabledMethods) ? 'freight' : 'standard');
+
+$selectedMethod = $_POST['shipping'] ?? $_SESSION['shipping_method'] ?? (in_array('standard', $disabledMethods) ? 'freight' : 'standard');
+$_SESSION['shipping_method'] = $selectedMethod;
+
+// Calculate current shipping cost
+$currentShippingCost = $shippingCosts[$selectedMethod] ?? 350;
 
 // Coupon logic
 $validCoupons = ['SAVE5' => 5, 'SAVE10' => 10, 'SAVE15' => 15];
@@ -44,6 +57,10 @@ if ($couponCode && isset($validCoupons[$couponCode])) {
     $couponPercent = $validCoupons[$couponCode];
     $couponDiscount = (int) round($subtotal * ($couponPercent / 100));
 }
+
+// Tax calculation
+$tax = calculate_tax($subtotal - $couponDiscount);
+$finalTotal = ($subtotal - $couponDiscount) + $currentShippingCost + $tax;
 
 // Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -58,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         header('Location: checkout');
         exit;
-    } else {
+    } elseif (isset($_POST['place_order'])) {
         // Place order
         $orderDAO = new OrderDAO();
         $orderData = [
@@ -66,10 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cart_id' => $_SESSION['cart_id'] ?? null,
             'order_number' => 'ORD-' . strtoupper(substr(uniqid('', true), -6)),
             'subtotal' => (int) round($subtotal),
-            'shipping_type' => $_POST['shipping'] ?? 'standard',
-            'shipping_cost' => 0,
-            'tax' => 0,
-            'final_amount' => (int) round($subtotal - $couponDiscount),
+            'shipping_type' => $selectedMethod,
+            'shipping_cost' => $currentShippingCost,
+            'tax' => $tax,
+            'final_amount' => $finalTotal,
             'shipping_name' => ($_POST['firstName'] ?? '') . ' ' . ($_POST['lastName'] ?? ''),
             'shipping_email' => $_POST['email'] ?? '',
             'shipping_phone' => $_POST['phone'] ?? '',
@@ -98,10 +115,13 @@ loadView('checkout', [
     'page_css' => $page_css,
     'cartItems' => $cartItems,
     'subtotal' => $subtotal,
+    'tax' => $tax,
+    'shippingCost' => $currentShippingCost,
     'couponDiscount' => $couponDiscount,
     'couponCode' => $couponCode,
     'couponPercent' => $couponPercent,
     'disabledMethods' => $disabledMethods,
     'selectedMethod' => $selectedMethod,
-    'total' => (int) round($subtotal - $couponDiscount)
+    'shippingCosts' => $shippingCosts,
+    'total' => $finalTotal
 ]);

@@ -62,3 +62,34 @@ if (!function_exists('format_price')) {
         return 'Rs. ' . number_format($amount, 0, ',', ',');
     }
 }
+
+/**
+ * Proper Shipping Cost Calculation (Old Logic)
+ */
+function calculate_shipping_cost($method, $subtotal)
+{
+    $base = max(0, $subtotal);
+    switch ($method) {
+        case 'standard':
+            return 350;
+        case 'express':
+            $percent = (int) round($base * 0.10);
+            return (int) min(700, $percent > 0 ? $percent : 700);
+        case 'white_glove':
+            $percent = (int) round($base * 0.05);
+            return (int) min(1600, $percent > 0 ? $percent : 1600);
+        case 'freight':
+            $percent = (int) round($base * 0.03);
+            return (int) max(2500, $percent);
+        default:
+            return 350;
+    }
+}
+
+/**
+ * Tax Calculation (Standard 18% GST)
+ */
+function calculate_tax($amount)
+{
+    return (int) round($amount * 0.18);
+}

@@ -73,41 +73,38 @@
                     ?>
                     <div
                         class="shipping-option <?php echo $selectedMethod === 'standard' ? 'selected' : ''; ?> <?php echo $isStandardDisabled ? 'disabled' : ''; ?>">
-                        <input type="radio" id="standard" name="shipping" value="standard" <?php echo $selectedMethod === 'standard' ? 'checked' : ''; ?>
-                        <?php echo $isStandardDisabled ? 'disabled' : ''; ?>>
+                        <input type="radio" id="standard" name="shipping" value="standard" <?php echo $selectedMethod === 'standard' ? 'checked' : ''; ?> <?php echo $isStandardDisabled ? 'disabled' : ''; ?>>
                         <label for="standard">
-                            <strong>Standard Shipping - ₹0</strong>
-                            <small>Free Delivery</small>
+                            <strong>Standard Shipping - <?php echo format_price($shippingCosts['standard']); ?></strong>
+                            <small><?php echo $shippingCosts['standard'] === 0 ? 'Free Delivery' : '2-5 Business Days'; ?></small>
                         </label>
                     </div>
 
                     <div
                         class="shipping-option <?php echo $selectedMethod === 'express' ? 'selected' : ''; ?> <?php echo $isExpressDisabled ? 'disabled' : ''; ?>">
-                        <input type="radio" id="express" name="shipping" value="express" <?php echo $selectedMethod === 'express' ? 'checked' : ''; ?>
-                        <?php echo $isExpressDisabled ? 'disabled' : ''; ?>>
+                        <input type="radio" id="express" name="shipping" value="express" <?php echo $selectedMethod === 'express' ? 'checked' : ''; ?> <?php echo $isExpressDisabled ? 'disabled' : ''; ?>>
                         <label for="express">
-                            <strong>Express Shipping - ₹0</strong>
-                            <small>Free Express</small>
+                            <strong>Express Shipping - <?php echo format_price($shippingCosts['express']); ?></strong>
+                            <small>Next Day Delivery</small>
                         </label>
                     </div>
 
                     <div
                         class="shipping-option <?php echo $selectedMethod === 'white_glove' ? 'selected' : ''; ?> <?php echo $isWhiteGloveDisabled ? 'disabled' : ''; ?>">
-                        <input type="radio" id="white_glove" name="shipping" value="white_glove" <?php echo $selectedMethod === 'white_glove' ? 'checked' : ''; ?>
-                        <?php echo $isWhiteGloveDisabled ? 'disabled' : ''; ?>>
+                        <input type="radio" id="white_glove" name="shipping" value="white_glove" <?php echo $selectedMethod === 'white_glove' ? 'checked' : ''; ?> <?php echo $isWhiteGloveDisabled ? 'disabled' : ''; ?>>
                         <label for="white_glove">
-                            <strong>White Glove Delivery - ₹0</strong>
-                            <small>Free White Glove</small>
+                            <strong>White Glove Delivery -
+                                <?php echo format_price($shippingCosts['white_glove']); ?></strong>
+                            <small>Unpacking & Setup</small>
                         </label>
                     </div>
 
                     <div
                         class="shipping-option <?php echo $selectedMethod === 'freight' ? 'selected' : ''; ?> <?php echo $isFreightDisabled ? 'disabled' : ''; ?>">
-                        <input type="radio" id="freight" name="shipping" value="freight" <?php echo $selectedMethod === 'freight' ? 'checked' : ''; ?>
-                        <?php echo $isFreightDisabled ? 'disabled' : ''; ?>>
+                        <input type="radio" id="freight" name="shipping" value="freight" <?php echo $selectedMethod === 'freight' ? 'checked' : ''; ?> <?php echo $isFreightDisabled ? 'disabled' : ''; ?>>
                         <label for="freight">
-                            <strong>Freight Shipping - ₹0</strong>
-                            <small>Free Freight</small>
+                            <strong>Freight Shipping - <?php echo format_price($shippingCosts['freight']); ?></strong>
+                            <small>Heavy Item Delivery</small>
                         </label>
                     </div>
                 </div>
@@ -120,7 +117,7 @@
                     <div class="form-group"><label><input type="radio" name="payment" value="upi"> UPI</label></div>
                 </div>
 
-                <button type="submit" class="place-order-btn">Place Order</button>
+                <button type="submit" name="place_order" class="place-order-btn">Place Order</button>
             </form>
         </div>
 
@@ -155,6 +152,17 @@
                         <?php echo format_price($couponDiscount); ?>
                     </span></div>
             <?php endif; ?>
+
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span id="shippingCost"><?php echo format_price($shippingCost); ?></span>
+            </div>
+
+            <div class="summary-row">
+                <span>Tax (GST 18%)</span>
+                <span id="taxAmount"><?php echo format_price($tax); ?></span>
+            </div>
+
             <div class="summary-row total"><span>Total Amount</span><span id="totalAmount">
                     <?php echo format_price($total); ?>
                 </span></div>

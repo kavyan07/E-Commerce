@@ -1,5 +1,10 @@
 <?php
 // Cart Controller
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['flash_message'] = ['text' => 'Please login to view your cart.', 'type' => 'info'];
+    header('Location: login');
+    exit;
+}
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $product_id = (int) ($_POST['product_id'] ?? $_GET['id'] ?? 0);
 $quantity = (int) ($_POST['quantity'] ?? 1);

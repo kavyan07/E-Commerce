@@ -2,6 +2,12 @@
 // AJAX Cart Controller
 header('Content-Type: application/json; charset=utf-8');
 
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Please login to use the cart.']);
+    exit;
+}
+
 function json_response(array $payload, int $code = 200): void
 {
     http_response_code($code);
@@ -82,5 +88,9 @@ try {
         ]
     ]);
 } catch (Throwable $e) {
-    json_response(['success' => false, 'message' => $e->getMessage()], 500);
+    json_response([
+        'success' => false,
+        'message' =>
+            $e->getMessage()
+    ], 500);
 }

@@ -4,14 +4,36 @@
  * Uses PDO for PostgreSQL
  */
 
+/**
+ * Simple .env loader
+ */
+if (file_exists(__DIR__ . '/../.env')) {
+    $lines = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0)
+            continue;
+        list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+    }
+}
+
 class Database
 {
-    private $host = 'localhost';
-    private $port = '5432';
-    private $db_name = 'ecommerce_db2';
-    private $username = 'postgres';
-    private $password = 'postgres'; // Update with your actual password
+    private $host;
+    private $port;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn = null;
+
+    public function __construct()
+    {
+        $this->host = getenv('DB_HOST') ?: 'localhost';
+        $this->port = getenv('DB_PORT') ?: '5432';
+        $this->db_name = getenv('DB_NAME') ?: 'ecommerce_db2';
+        $this->username = getenv('DB_USER') ?: 'postgres';
+        $this->password = getenv('DB_PASS') ?: 'postgres';
+    }
 
     public function connect()
     {

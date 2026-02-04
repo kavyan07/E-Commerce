@@ -1,6 +1,14 @@
 <div class="login-container">
     <div class="login-card">
         <h1>Login</h1>
+
+        <?php if (isset($error) && $error): ?>
+            <div class="error-msg"
+                style="color: #ef4444; background: #fee2e2; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; text-align: center; border: 1px solid #fecaca;">
+                <?php echo htmlspecialchars($error); ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST">
             <div class="form-group">
                 <label for="email">Email Address</label>

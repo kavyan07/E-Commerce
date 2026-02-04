@@ -20,10 +20,6 @@ function read_payload(): array
     return $_POST ?? [];
 }
 
-function calculate_shipping_cost(string $method, float $subtotal): int
-{
-    return 0; // Matching current checkout logic (Free)
-}
 
 $cart = $_SESSION['cart'] ?? [];
 if (empty($cart)) {
@@ -54,9 +50,15 @@ if (in_array($method, $disabled)) {
 }
 $_SESSION['shipping_method'] = $method;
 
-$shipping = 0;
+// Final calculations
 $couponDiscount = $_SESSION['coupon']['amount'] ?? 0;
-$total = $subtotal - $couponDiscount;
+if (!$couponDiscount && !empty($_SESSION['coupon']['percent'])) {
+    $couponDiscount = (int) round($subtotal * ($_SESSION['coupon']['percent'] / 100));
+}
+
+$shipping = calculate_shipping_cost($method, $subtotal);
+$tax = calculate_tax($subtotal - $couponDiscount);
+$total = ($subtotal - $couponDiscount) + $shipping + $tax;
 
 json_response([
     'success' => true,
@@ -64,7 +66,7 @@ json_response([
     'summary' => [
         'subtotal' => $subtotal,
         'shipping' => $shipping,
-        'tax' => 0,
+        'tax' => $tax,
         'total' => $total,
         'selectedMethod' => $method,
         'disabledMethods' => $disabled,

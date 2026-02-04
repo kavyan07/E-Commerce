@@ -1,5 +1,10 @@
 <?php
 // My Orders Controller
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['flash_message'] = ['text' => 'Please login to view your orders.', 'type' => 'info'];
+    header('Location: login');
+    exit;
+}
 require_once ROOT_PATH . '/src/OrderDAO.php';
 
 $orderDAO = new OrderDAO();
