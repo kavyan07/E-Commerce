@@ -149,9 +149,8 @@ $page_css = isset($page_css) ? $page_css : '';
         <ul>
             <li><a href="home" class="<?php if ($currentRoute === 'home')
                 echo 'active'; ?>">Home</a></li>
-            <li><a href="product-listing"
-                    class="<?php if ($currentRoute === 'product-listing')
-                        echo 'active'; ?>">Products</a></li>
+            <li><a href="product-listing" class="<?php if ($currentRoute === 'product-listing')
+                echo 'active'; ?>">Products</a></li>
 
             <li>
                 <a href="cart" class="<?php if ($currentRoute === 'cart')
@@ -168,9 +167,13 @@ $page_css = isset($page_css) ? $page_css : '';
                     echo 'active'; ?>">Login</a></li>
             <?php else: ?>
                 <li>
+                    <a href="dashboard" class="<?php if ($currentRoute === 'dashboard')
+                        echo 'active'; ?>">Dashboard</a>
+                </li>
+                <li>
                     <a href="my-orders" class="<?php if ($currentRoute === 'my-orders')
                         echo 'active'; ?>">
-                        <?php echo htmlspecialchars($_SESSION['user']['firstName'] ?? 'Profile'); ?>
+                        Orders
                     </a>
                 </li>
                 <li><a href="logout">Logout</a></li>

@@ -15,6 +15,7 @@ function initializeApp() {
     initProductGallery();
     initShippingOptions();
     initProductListingEnhancements();
+    initDashboard();
 }
 
 // ============================================
@@ -1094,3 +1095,119 @@ function updateProductCount() {
     `;
     document.head.appendChild(style);
 })();
+
+// ============================================
+// MY ORDERS PAGE
+// ============================================
+function toggleOrderDetails(btn) {
+    const card = btn.closest('.order-card');
+    const details = card.querySelector('.order-details-expanded');
+    const isHidden = details.style.display === 'none';
+
+    details.style.display = isHidden ? 'block' : 'none';
+    btn.classList.toggle('active', isHidden);
+
+    if (isHidden) {
+        btn.innerHTML = `Hide Order Details 
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 15l-6-6-6 6"></path>
+            </svg>`;
+    } else {
+        btn.innerHTML = `View Order Details 
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"></path>
+            </svg>`;
+    }
+}
+
+// ============================================
+// USER DASHBOARD - CHART.JS
+// ============================================
+function initDashboard() {
+    const chartCtx = document.getElementById('ordersChart');
+    if (!chartCtx) return;
+
+    // Load Chart.js if not already present
+    if (typeof Chart === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = () => renderDashboardChart(chartCtx);
+        document.head.appendChild(script);
+    } else {
+        renderDashboardChart(chartCtx);
+    }
+}
+
+function renderDashboardChart(ctx) {
+    fetch('api/dashboard-chart')
+        .then(response => response.json())
+        .then(res => {
+            if (res.success) {
+                const chart = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: res.labels,
+                        datasets: [{
+                            label: 'Spendings (Rs.)',
+                            data: res.data,
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#4f46e5',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                padding: 12,
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function (context) {
+                                        return 'Rs. ' + context.parsed.y.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#f1f5f9',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: '#64748b',
+                                    padding: 10,
+                                    callback: function (value) {
+                                        return 'Rs.' + value;
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#64748b',
+                                    padding: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+}

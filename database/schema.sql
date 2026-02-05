@@ -4,17 +4,17 @@
 -- =========================================================
 
 -- Cleanup existing tables (Safe Rebuild)
-DROP TABLE IF EXISTS sales_order_items CASCADE;
-DROP TABLE IF EXISTS sales_orders CASCADE;
-DROP TABLE IF EXISTS sale_cart_product CASCADE;
-DROP TABLE IF EXISTS sales_cart CASCADE;
-DROP TABLE IF EXISTS catalog_category_products CASCADE;
-DROP TABLE IF EXISTS catalog_category_attribute CASCADE;
-DROP TABLE IF EXISTS catalog_category_entity CASCADE;
-DROP TABLE IF EXISTS catalog_product_attribute CASCADE;
-DROP TABLE IF EXISTS catalog_product_entity CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS brands CASCADE;
+-- DROP TABLE IF EXISTS sales_order_items CASCADE;
+-- DROP TABLE IF EXISTS sales_orders CASCADE;
+-- DROP TABLE IF EXISTS sale_cart_product CASCADE;
+-- DROP TABLE IF EXISTS sales_cart CASCADE;
+-- DROP TABLE IF EXISTS catalog_category_products CASCADE;
+-- DROP TABLE IF EXISTS catalog_category_attribute CASCADE;
+-- DROP TABLE IF EXISTS catalog_category_entity CASCADE;
+-- DROP TABLE IF EXISTS catalog_product_attribute CASCADE;
+-- DROP TABLE IF EXISTS catalog_product_entity CASCADE;
+-- DROP TABLE IF EXISTS users CASCADE;
+-- DROP TABLE IF EXISTS brands CASCADE;
 
 -- 1. Users Table
 CREATE TABLE users (

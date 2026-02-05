@@ -40,6 +40,7 @@ $routes = [
     'signup' => 'signup.php',
     'logout' => 'logout.php',
     'my-orders' => 'my-orders.php',
+    'dashboard' => 'dashboard.php',
     'ajax-cart' => 'ajax-cart.php',
     'ajax-checkout' => 'ajax-checkout.php'
 ];

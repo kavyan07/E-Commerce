@@ -11,6 +11,13 @@ $orderDAO = new OrderDAO();
 $userId = $_SESSION['user_id'] ?? null;
 $ordersList = $userId ? $orderDAO->getOrdersByUser($userId) : ($_SESSION['orders'] ?? []);
 
+// Enrich orders with items
+if ($userId && !empty($ordersList)) {
+    foreach ($ordersList as &$order) {
+        $order['items'] = $orderDAO->getOrderItems($order['entity_id']);
+    }
+}
+
 $page_title = 'My Orders - EasyCart';
 $page_css = 'my-orders.css';
 

@@ -95,4 +95,41 @@ class OrderDAO
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Get order items for a specific order
+     */
+    public function getOrderItems($orderId)
+    {
+        $sql = "SELECT * FROM sales_order_items WHERE order_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$orderId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get summary statistics for a user dashboard
+     */
+    public function getDashboardStats($userId)
+    {
+        $sql = "SELECT COUNT(*) as total_orders, COALESCE(SUM(final_amount), 0) as total_spent 
+                FROM sales_orders WHERE user_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get individual orders for chart plotting (Order amount vs Date)
+     */
+    public function getOrderTrend($userId)
+    {
+        $sql = "SELECT created_at as order_timestamp, final_amount, order_number 
+                FROM sales_orders 
+                WHERE user_id = ? 
+                ORDER BY created_at ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
