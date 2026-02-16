@@ -1,0 +1,17 @@
+<?php
+class Page_Block_Home extends Core_Block_Templet
+{
+    public function __construct()
+    {
+    
+            $this->setTemplate("Page/View/home.phtml");  
+    }
+
+}
+
+
+
+
+
+
+?>

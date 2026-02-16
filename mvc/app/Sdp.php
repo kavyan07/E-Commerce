@@ -1,24 +1,36 @@
 <?php
-       class Sdp{
-        public static function run(){
-    
-         $request = new Core_Model_Request();
+class Sdp
+{
+    public static function run()
+    {
 
-         $className = sprintf(
-            "%s_Controllers_%s",
-          ucfirst($request->getModuleName()),
-          ucfirst($request->getControllerName()),
-        
-         );
-         $action = $request->getActionName()."Action";
-         $classObj = new $className();
-         $classObj->$action();
+        $front = new Core_Controllers_Front();
+        $front->run();
 
-   
-       
 
-        }
     }
+
+    public static function getModel($modelName)
+    {
+        $model = array_map("ucfirst", explode("/", $modelName));
+        $model = sprintf("%s_Model_%s", $model[0], $model[1]);
+        $modelObj = new $model();
+        return $modelObj;
+
+
+    }
+      public static function getBlock($modelName)
+    {
+        $model = array_map("ucfirst", explode("/", $modelName));
+        $model = sprintf("%s_Block_%s", $model[0], $model[1]);
+        $modelObj = new $model();
+        return $modelObj;
+
+
+    }
+
+    
+}
 
 
 ?>
