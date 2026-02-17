@@ -11,6 +11,7 @@ class Catalog_Controllers_Product
         $root->getChild('content')->addChild('view',$view);
         
 
+
         // // print_r($head);
         // // print_r($header);
         // print_r($root);
@@ -19,6 +20,13 @@ class Catalog_Controllers_Product
         $root->toHtml();
         // print_r($root);
     }
+      public function listAction(){
+        $root = Sdp::getBlock('page/root');
+        $list = Sdp ::getBlock("catalog/product_list");
+        $root->getChild('content')->addChild('view',$list);
+         $root->toHtml();
+    }
+  
 }
 
 
