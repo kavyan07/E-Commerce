@@ -1,5 +1,5 @@
 <?php
-class Admin_Controllers_Customer
+class Admin_Controllers_Customer extends Core_Controllers_Front
 {
 
     public function newAction()

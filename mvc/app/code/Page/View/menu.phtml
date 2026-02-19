@@ -1,0 +1,15 @@
+<?php
+$menu = $this->getMenuArray(); 
+?>
+
+<html>
+    <body>
+        <ul>
+            <?php foreach ($menu as $key ): ?>
+                <li><a href="">
+                    <?php echo $key;?>
+                </a></li>
+            <?php endforeach; ?>
+        </ul>
+    </body>
+</html>

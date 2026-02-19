@@ -1,0 +1,57 @@
+<?php
+/**
+ * Menu Template
+ * File   : app/code/Page/View/header/menu.phtml
+ * Block  : Page_Block_Header_Menu
+ *
+ * Renders desktop nav links + mobile nav links.
+ * All data comes from block methods — zero logic here.
+ */
+$navItems  = $this->getNavItems();   // array of nav link definitions
+$cartCount = $this->getCartCount();  // int — items in cart
+?>
+
+<!-- ── Desktop Navigation ── -->
+<nav class="header-nav" id="header-nav" aria-label="Main navigation">
+    <?php foreach ($navItems as $item): ?>
+        <a
+            href="<?php echo $item['url']; ?>"
+            class="nav-link"
+            id="nav-<?php echo $item['id']; ?>"
+            <?php if ($item['id'] === 'cart' && $cartCount > 0): ?>
+                aria-label="<?php echo $item['label']; ?>, <?php echo $cartCount; ?> items"
+            <?php endif; ?>
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <?php echo $item['icon']; ?>
+            </svg>
+            <?php echo $item['label']; ?>
+            <?php if ($item['id'] === 'cart' && $cartCount > 0): ?>
+                <span class="cart-badge" aria-hidden="true">
+                    <?php echo $cartCount > 99 ? '99+' : $cartCount; ?>
+                </span>
+            <?php endif; ?>
+        </a>
+    <?php endforeach; ?>
+</nav>
+
+<!-- ── Mobile Navigation Overlay ── -->
+<nav class="mobile-nav" id="mobile-nav-menu" aria-label="Mobile navigation" aria-hidden="true">
+    <?php foreach ($navItems as $item): ?>
+        <a
+            href="<?php echo $item['url']; ?>"
+            class="nav-link"
+            id="mobile-nav-<?php echo $item['id']; ?>"
+        >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <?php echo $item['icon']; ?>
+            </svg>
+            <?php echo $item['label']; ?>
+            <?php if ($item['id'] === 'cart' && $cartCount > 0): ?>
+                <span class="cart-badge" aria-hidden="true">
+                    <?php echo $cartCount > 99 ? '99+' : $cartCount; ?>
+                </span>
+            <?php endif; ?>
+        </a>
+    <?php endforeach; ?>
+</nav>

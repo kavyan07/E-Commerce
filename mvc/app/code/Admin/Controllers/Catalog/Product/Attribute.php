@@ -1,5 +1,5 @@
 <?php
-class Admin_Controllers_Catalog_Product_Attribute
+class Admin_Controllers_Catalog_Product_Attribute extends Core_Controllers_Front
 {
 
     public function newAction()

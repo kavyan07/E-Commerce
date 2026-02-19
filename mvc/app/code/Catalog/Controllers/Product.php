@@ -1,5 +1,5 @@
 <?php
-class Catalog_Controllers_Product
+class Catalog_Controllers_Product extends Core_Controllers_Front
 {
     // public function listAction(){
     //     echo "list action";
@@ -8,10 +8,10 @@ class Catalog_Controllers_Product
     {
         $root = Sdp::getBlock("page/root");
         $view = Sdp ::getBlock("catalog/product_view");
-        $root->getChild('content')->addChild('view',$view);
         
-
-
+          $root->getChild('content')->addChild('view',$view);
+           $root->getChild('head')->addJs('js/catalog/view.js',$view);
+    
         // // print_r($head);
         // // print_r($header);
         // print_r($root);
