@@ -10,6 +10,9 @@ class Core_Model_Request
     {
         $uri = $this->getRequestUri();
         $uri = str_replace($this->getBaseUrl(), "", $uri);
+        if (strpos($uri, '?') !== false) {
+            $uri = explode('?', $uri)[0];
+        }
         $uri = array_filter(explode("/", $uri));
 
 
@@ -49,7 +52,7 @@ class Core_Model_Request
 
     public function getBaseUrl()
     {
-        return "http://localhost/mvc/";
+        return "http://localhost/mvc1/";
     }
 
     public function getControllerName()

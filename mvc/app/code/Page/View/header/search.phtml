@@ -1,40 +1,16 @@
-<?php
-/**
- * Search Template
- * File   : app/code/Page/View/header/search.phtml
- * Block  : Page_Block_Header_Search
- *
- * Renders the search bar.
- * All configuration (action URL, placeholder, query param) comes from block.
- */
-$actionUrl    = $this->getActionUrl();    // e.g. /catalog/product
-$queryParam   = $this->getQueryParam();   // e.g. q
-$placeholder  = $this->getPlaceholder(); // e.g. "Search products…"
-$currentQuery = $this->getCurrentQuery(); // pre-fill on results page
-?>
-
-<div class="header-search" role="search">
-    <label for="header-search-input" class="sr-only">Search products</label>
-    <input
-        type="search"
-        id="header-search-input"
-        class="search-input"
-        name="<?php echo htmlspecialchars($queryParam, ENT_QUOTES); ?>"
-        placeholder="<?php echo htmlspecialchars($placeholder, ENT_QUOTES); ?>"
-        value="<?php echo $currentQuery; ?>"
-        autocomplete="off"
-        aria-label="<?php echo htmlspecialchars($placeholder, ENT_QUOTES); ?>"
-        data-action="<?php echo htmlspecialchars($actionUrl, ENT_QUOTES); ?>"
-    >
-    <button
-        class="search-btn"
-        id="header-search-btn"
-        type="button"
-        aria-label="Submit search"
-    >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"/>
-            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-        </svg>
-    </button>
+<div class="header-search">
+    <form class="search-form" action="/search" method="get">
+        <input
+            type="text"
+            name="q"
+            class="search-input"
+            placeholder="<?php echo $this->getPlaceholder(); ?>"
+            autocomplete="off" />
+        <button type="submit" class="search-btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="16.5" y1="16.5" x2="22" y2="22" />
+            </svg>
+        </button>
+    </form>
 </div>

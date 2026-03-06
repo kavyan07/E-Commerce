@@ -1,5 +1,5 @@
 <?php
-class Admin_Block_Attribute_List extends Core_Block_Templet
+class Admin_Block_Attribute_List extends Core_Block_Template
 {
      public function _construct()
     {

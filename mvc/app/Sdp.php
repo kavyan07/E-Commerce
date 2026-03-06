@@ -29,6 +29,14 @@ class Sdp
 
     }
 
+    public static function getResourceModel($modelName){
+       $model = array_map("ucfirst", explode("/", $modelName));
+        $model = sprintf("%s_Model_Resource_%s", $model[0], $model[1]);
+        $modelObj = new $model();
+        return $modelObj;
+
+    }
+
     
 }
 

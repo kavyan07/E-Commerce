@@ -1,5 +1,5 @@
 <?php
-class Admin_Block_Category_New extends Core_Block_Templet
+class Admin_Block_Category_New extends Core_Block_Template
 {
      public function _construct()
     {

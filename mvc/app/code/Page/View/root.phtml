@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php $this->getChildHtml("head"); ?>
+    <?php $this->getChildHtml("head") ?>
 </head>
 <body>
-    <?php $this->getChildHtml("header"); ?>
-
-    <main class="content" id="main-content">
-        <?php $this->getChildHtml("content"); ?>
-    </main>
-
-    <footer class="footer" id="site-footer">
-        <?php $this->getChildHtml("footer"); ?>
-    </footer>
+    <div class="header">
+        <?php $this->getChildHtml("header") ?>
+    </div>
+    <div class="content">
+        <?php $this->getChildHtml("content") ?>
+    </div>
+    <div class="footer">
+        <?php $this->getChildHtml("footer") ?>
+    </div>
 </body>
 </html>

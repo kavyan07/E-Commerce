@@ -1,22 +1,15 @@
-<?php $js  = $this->getJs();  ?>
-<?php $css = $this->getCss(); ?>
+<?php
+$base = Sdp::getModel("core/request")->getBaseUrl();
+$js   = $this->getJs();
+$css  = $this->getCss();
+?>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="MVC1 — A modern PHP MVC framework storefront">
-<title>MVC1 Store</title>
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Framework Stylesheet -->
-<link rel="stylesheet" href="/skin/css/style.css">
-
-<?php foreach ($css as $key): ?>
-    <link rel="stylesheet" href="<?php echo htmlspecialchars($key); ?>">
+<?php foreach ($js as $_js): ?>
+    <script src="<?php echo $base . $_js; ?>"></script>
 <?php endforeach; ?>
 
-<?php foreach ($js as $key): ?>
-    <script src="<?php echo htmlspecialchars($key); ?>" defer></script>
+<?php foreach ($css as $_css): ?>
+    <link rel="stylesheet" href="<?php echo $base . $_css; ?>">
 <?php endforeach; ?>

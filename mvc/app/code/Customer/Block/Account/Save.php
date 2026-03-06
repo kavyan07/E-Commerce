@@ -1,5 +1,5 @@
 <?php
-class Customer_Block_Account_Save extends Core_Block_Templet
+class Customer_Block_Account_Save extends Core_Block_Template
 {
      public function _construct()
     {
