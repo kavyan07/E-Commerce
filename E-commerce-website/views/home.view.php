@@ -14,7 +14,7 @@
         </div>
         <div class="hero-right">
             <div class="hero-image">
-                <img src="images/products/sneakers.jpg" alt="Featured Product">
+                <img src="public/images/products/sneakers.jpg" alt="Featured Product">
             </div>
             <div class="hero-stats">
                 <div class="stat-item">
@@ -174,7 +174,7 @@
         <div class="category-grid">
             <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="images/categories/fashion.jpg" alt="Fashion">
+                    <img src="public/images/categories/fashion.jpg" alt="Fashion">
                 </div>
                 <div class="category-overlay">
                     <h3>Fashion</h3>
@@ -183,7 +183,7 @@
             </a>
             <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="images/categories/electronics.jpg" alt="Electronics">
+                    <img src="public/images/categories/electronics.jpg" alt="Electronics">
                 </div>
                 <div class="category-overlay">
                     <h3>Electronics</h3>
@@ -192,7 +192,7 @@
             </a>
             <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="images/categories/home.jpg" alt="Home & Kitchen">
+                    <img src="public/images/categories/home.jpg" alt="Home & Kitchen">
                 </div>
                 <div class="category-overlay">
                     <h3>Home & Kitchen</h3>
@@ -201,7 +201,7 @@
             </a>
             <a href="product-listing" class="category-card">
                 <div class="category-image">
-                    <img src="images/categories/sports.jpg" alt="Sports & Fitness">
+                    <img src="public/images/categories/sports.jpg" alt="Sports & Fitness">
                 </div>
                 <div class="category-overlay">
                     <h3>Sports & Fitness</h3>
@@ -219,25 +219,25 @@
         <div class="brand-grid">
             <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="images/brands/nike.jpg" alt="Nike">
+                    <img src="public/images/brands/nike.jpg" alt="Nike">
                 </div>
                 <div class="brand-name">Nike</div>
             </a>
             <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="images/brands/apple.jpg" alt="Apple">
+                    <img src="public/images/brands/apple.jpg" alt="Apple">
                 </div>
                 <div class="brand-name">Apple</div>
             </a>
             <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="images/brands/samsung.jpg" alt="Samsung">
+                    <img src="public/images/brands/samsung.jpg" alt="Samsung">
                 </div>
                 <div class="brand-name">Samsung</div>
             </a>
             <a href="product-listing" class="brand-card">
                 <div class="brand-image">
-                    <img src="images/brands/sony.jpg" alt="Sony">
+                    <img src="public/images/brands/sony.jpg" alt="Sony">
                 </div>
                 <div class="brand-name">Sony</div>
             </a>

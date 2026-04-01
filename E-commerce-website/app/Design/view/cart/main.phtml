@@ -1,0 +1,106 @@
+<div class="container">
+    <div class="page-header">
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            Shopping Cart
+        </h1>
+        <div class="item-count"><?php echo count($this->cartItems); ?> Items</div>
+    </div>
+
+    <div class="cart-layout">
+        <?php $items = $this->cartItems; ?>
+     <?php if (empty($items)): ?>
+            <div class="cart-section" style="width: 100%;">
+                <div class="empty-cart">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added anything to your cart yet.</p>
+                    <a href="/E-commerce-website/product-listing" class="checkout-btn"
+                        style="width: auto; padding: 1rem 2rem;">Start Shopping</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <!-- Cart Items List -->
+            <div class="cart-section">
+                <div class="cart-items" id="cartItems">
+                    <?php foreach ($items as $item): ?>
+                        <div class="cart-item" data-product-id="<?php echo $item['product_id']; ?>">
+                            <div class="item-image">
+                                <img src="/E-commerce-website/<?php echo $item['image']; ?>"
+                                    alt="<?php echo htmlspecialchars($item['name']); ?>">
+                            </div>
+                            <div class="item-details">
+                                <h3><?php echo htmlspecialchars($item['name']); ?></h3>
+                                <p>Premium Quality Product</p>
+                                <div class="item-price-mobile">Rs. <?php echo number_format($item['price'], 2); ?></div>
+
+                                <div class="item-actions" style="margin-top: 1rem;">
+                                    <div class="quantity">
+                                        <form class="quantity-form">
+                                            <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
+                                            <button type="button" class="qty-decrease">-</button>
+                                            <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>"
+                                                min="1" readonly>
+                                            <button type="button" class="qty-increase">+</button>
+                                        </form>
+                                    </div>
+                                    <form class="remove-form">
+                                        <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
+                                        <button type="button" class="remove-btn">Remove</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="item-price">Rs. <?php echo number_format($item['price'], 2); ?></div>
+                            <div class="item-total" data-total="<?php echo $item['price'] * $item['quantity']; ?>">
+                                Rs. <?php echo number_format($item['price'] * $item['quantity'], 2); ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary-wrapper">
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="cartSubtotal">Rs. <?php echo number_format($this->subtotal, 2); ?></span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span id="cartShipping">FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Estimated Tax (18%)</span>
+                        <span id="cartTax">Rs. <?php echo number_format($this->subtotal * 0.18, 2); ?></span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="cartTotal">Rs. <?php echo number_format($this->subtotal * 1.18, 2); ?></span>
+                    </div>
+
+                    <a href="/E-commerce-website/checkout" class="checkout-btn">
+                        Proceed to Checkout
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+
+                    <a href="/E-commerce-website/product-listing" class="continue-shopping-link">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>

@@ -1,0 +1,157 @@
+<section class="page-header" style="background:linear-gradient(135deg,#6c5ce7 0%,#a29bfe 100%);padding:2.5rem;text-align:center;color:white;">
+    <h1>Secure Checkout</h1>
+    <p>Complete your purchase with confidence. Secure 256-bit SSL encrypted.</p>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</section>
+
+<div class="container">
+    <div class="checkout-layout">
+        <!-- Billing Details -->
+        <div class="checkout-form-section">
+            <form class="checkout-form" id="checkoutForm" method="POST" action="/E-commerce-website/checkout">
+                <div class="form-section">
+                    <h2>📍 Shipping Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="firstName" name="firstName" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="9876543210" maxlength="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Street Address</label>
+                        <input type="text" id="street" name="street" placeholder="123 Main St" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>City</label><input type="text" id="city" name="city" required></div>
+                        <div class="form-group"><label>State</label><input type="text" id="state" name="state" required></div>
+                        <div class="form-group"><label>PIN Code</label><input type="text" id="zip" name="zip" required></div>
+                    </div>
+                    <input type="hidden" name="country" value="India">
+                </div>
+
+                <div class="form-section">
+                    <h2>🚚 Shipping Method</h2>
+                    <?php foreach ($this->shippingCosts as $key => $cost): ?>
+                        <?php if (!in_array($key, $this->disabledMethods)): ?>
+                        <div class="shipping-option <?= $this->selectedMethod === $key ? 'selected' : '' ?>">
+                            <input type="radio" name="shipping" value="<?= $key ?>" id="ship-<?= $key ?>" <?= $this->selectedMethod === $key ? 'checked' : '' ?> onclick="window.location.href='?shipping=<?= $key ?>'">
+                            <label for="ship-<?= $key ?>">
+                                <strong><?= ucfirst($key) ?> Shipping — ₹<?= number_format($cost, 2) ?></strong>
+                            </label>
+                        </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="form-section">
+                    <h2>💳 Payment Method</h2>
+                    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+                        <label class="pay-opt"><input type="radio" name="payment" value="card" checked> Online Payment</label>
+                        <label class="pay-opt"><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
+                    </div>
+                </div>
+
+                <button type="button" class="place-order-btn" onclick="initiatePayment()">
+                    🔒 Pay ₹<?= number_format($this->total, 2) ?> & Place Order
+                </button>
+                <input type="hidden" name="place_order" value="1">
+            </form>
+        </div>
+
+        <!-- Summary -->
+        <div class="order-summary" style="background:#f8f9fa;padding:1.5rem;border-radius:15px;">
+            <h2 style="margin-bottom:1rem;">Order Summary</h2>
+            <div class="summary-items">
+                <?php foreach ($this->cartItems as $item): ?>
+                    <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.9rem;">
+                        <span><?= htmlspecialchars($item['name']) ?> (x<?= $item['quantity'] ?>)</span>
+                        <span>₹<?= number_format($item['price'] * $item['quantity'], 2) ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <hr style="margin:1rem 0;opacity:0.1;">
+            <div class="summary-row"><span>Subtotal</span><span>₹<?= number_format($this->subtotal, 2) ?></span></div>
+            <?php if ($this->couponDiscount > 0): ?>
+                <div class="summary-row" style="color:var(--success);"><span>Discount (<?= $this->couponCode ?>)</span><span>-₹<?= number_format($this->couponDiscount, 2) ?></span></div>
+            <?php endif; ?>
+            <div class="summary-row"><span>Shipping</span><span>₹<?= number_format($this->shippingCost, 2) ?></span></div>
+            <div class="summary-row"><span>Tax (GST 18%)</span><span>₹<?= number_format($this->tax, 2) ?></span></div>
+            <div class="summary-row" style="font-size:1.2rem;font-weight:800;margin-top:1rem;"><span>Total</span><span>₹<?= number_format($this->total, 2) ?></span></div>
+
+            <div style="margin-top:1.5rem;">
+                <form method="POST" action="/E-commerce-website/checkout" style="display:flex;gap:0.5rem;">
+                    <input type="hidden" name="apply_coupon" value="1">
+                    <input type="text" name="coupon" placeholder="CUPON CODE" class="form-control" style="flex:1;">
+                    <button type="submit" class="btn btn-primary" style="padding:0.75rem 1rem;">Apply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function initiatePayment() {
+    const form = document.getElementById('checkoutForm');
+    if (!form.reportValidity()) return;
+
+    const method = document.querySelector('input[name="payment"]:checked').value;
+    const amount = <?= $this->total ?>;
+
+    if (method === 'cod') {
+        form.submit();
+        return;
+    }
+
+    const options = {
+        "key": "rzp_test_YourKeyCheck", // Placeholder
+        "amount": Math.round(amount * 100),
+        "currency": "INR",
+        "name": "EasyCart",
+        "description": "Order Payment",
+        "handler": function (response) {
+            const rzpId = document.createElement('input');
+            rzpId.type = 'hidden'; rzpId.name = 'razorpay_payment_id'; rzpId.value = response.razorpay_payment_id;
+            form.appendChild(rzpId);
+            form.submit();
+        },
+        "prefill": {
+            "name": document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+            "email": document.getElementById('email').value,
+            "contact": document.getElementById('phone').value
+        },
+        "theme": { "color": "#6c5ce7" }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+}
+</script>
+
+<style>
+.checkout-layout { display: flex; gap: 2rem; margin-top: 2rem; }
+.checkout-form-section { flex: 2; }
+.order-summary { flex: 1; height: fit-content; }
+.form-section { background: #fff; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.form-section h2 { font-size: 1.1rem; margin-bottom: 1.25rem; color: #1a1a2e; }
+.form-row { display: flex; gap: 1rem; }
+.form-group { flex: 1; margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.4rem; color: #64748b; }
+.form-control { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; }
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #475569; }
+.place-order-btn { width: 100%; padding: 1rem; background: #6c5ce7; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.place-order-btn:hover { background: #5a4bd1; }
+.shipping-option { border: 1px solid #e2e8f0; padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; }
+.shipping-option.selected { border-color: #6c5ce7; background: #f5f3ff; }
+.pay-opt { border: 1px solid #e2e8f0; padding: 0.75rem; border-radius: 8px; flex: 1; text-align: center; cursor: pointer; }
+</style>

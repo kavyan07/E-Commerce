@@ -9,15 +9,15 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form id="signupForm" method="POST">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <label for="firstname">First Name</label>
+                    <input type="text" id="firstname" name="firstName" required>
                 </div>
                 <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required>
+                    <label for="lastname">Last Name</label>
+                    <input type="text" id="lastname" name="lastName" required>
                 </div>
             </div>
             <div class="form-group">
@@ -31,43 +31,11 @@
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
+                <div id="passwordStrength" style="font-size: 0.8rem; margin-top: 0.2rem; font-weight: 600;"></div>
+                <div id="passwordHint" style="font-size: 0.75rem; color: #64748b; margin-top: 0.1rem;"></div>
             </div>
             <button type="submit" class="signup-btn">Create Account</button>
         </form>
         <p class="auth-link">Already have an account? <a href="login">Login</a></p>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const firstName = document.getElementById('firstName');
-        const lastName = document.getElementById('lastName');
-        const email = document.getElementById('email');
-        const phone = document.getElementById('phone');
-        const password = document.getElementById('password');
-
-        form.addEventListener('submit', function (e) {
-            let errors = [];
-
-            if (firstName.value.trim().length < 2) errors.push("First name is too short.");
-            if (lastName.value.trim().length < 2) errors.push("Last name is too short.");
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) errors.push("Invalid email format.");
-
-            if (phone.value.trim() && !/^\d{10}$/.test(phone.value.trim())) {
-                errors.push("Phone number must be exactly 10 digits.");
-            }
-
-            if (password.value.length < 6) {
-                errors.push("Password must be at least 6 characters long.");
-            }
-
-            if (errors.length > 0) {
-                e.preventDefault();
-                alert(errors.join("\n"));
-            }
-        });
-    });
-</script>

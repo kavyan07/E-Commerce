@@ -44,14 +44,15 @@ class CartDAO
         $cartRecord = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($cartRecord && $cartRecord['cart_id'] > 0) {
+            $_SESSION['cart_id'] = (int) $cartRecord['cart_id'];
             return (int) $cartRecord['cart_id'];
         }
 
         // Create new cart
-        $sql = "INSERT INTO sales_cart (session_id, user_id, guest_id) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO sales_cart (session_id, user_id, guest_id) VALUES (?, ?, ?) RETURNING cart_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$sessionId, $userId, $guestId]);
-        return (int) $this->db->lastInsertId();
+        return (int) $stmt->fetchColumn();
     }
 
     /**

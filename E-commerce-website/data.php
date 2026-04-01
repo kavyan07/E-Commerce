@@ -16,10 +16,35 @@ $brandDAO = new BrandDAO();
 $dbProducts = $productDAO->getAllProducts();
 $products = [];
 foreach ($dbProducts as $p) {
-    // Cleanup image path (remove public/ or ../ if present)
-    $imagePath = str_replace(['public/', '../public/'], '', $p['image_main']);
-    if (strpos($imagePath, 'images/') !== 0) {
-        $imagePath = 'images/' . $imagePath;
+    $imagePath = $p['image_main'];
+    if (strpos($imagePath, 'http') === 0) {
+        // Absolute URL, do nothing
+    } else {
+        // Strip leading media/ or /media/ if present
+        $imagePath = preg_replace('/^\/?media\//', '', $imagePath);
+        
+        if (strpos($imagePath, 'public/') === 0) {
+            // Already starts with public/, leave as is
+        } elseif (strpos($imagePath, 'images/') === 0) {
+            $imagePath = 'public/' . $imagePath;
+        } else {
+            $imagePath = 'public/images/' . $imagePath;
+        }
+    }
+    // Standardize to public/images/...
+    $imagePath = str_replace('../public/', 'public/', $imagePath);
+
+    // Generate multiple image paths for product gallery
+    $imageBaseName = pathinfo($imagePath, PATHINFO_FILENAME);
+    $imageExt = pathinfo($imagePath, PATHINFO_EXTENSION);
+    $imageDir = dirname($imagePath);
+
+    // Check for additional product images (e.g., keyboard_2.jpg, keyboard_3.jpg)
+    $productImages = [$imagePath];
+    for ($i = 2; $i <= 3; $i++) {
+        $altImage = $imageDir . '/' . $imageBaseName . '_' . $i . '.' . $imageExt;
+        // Always add to create gallery effect (will use main image as fallback if alt doesn't exist)
+        $productImages[] = file_exists(__DIR__ . '/' . $altImage) ? $altImage : $imagePath;
     }
 
     $products[$p['id']] = [
@@ -28,6 +53,7 @@ foreach ($dbProducts as $p) {
         'price' => $p['price'],
         'originalPrice' => $p['original_price'],
         'image' => $imagePath,
+        'images' => $productImages,
         'description' => $p['description'],
         'badge' => $p['badge'],
         'shipping_type' => $p['shipping_type'],
@@ -59,7 +85,7 @@ $orders = $_SESSION['orders'] ?? [];
 if (!function_exists('format_price')) {
     function format_price($amount)
     {
-        return 'Rs. ' . number_format($amount, 0, ',', ',');
+        return '₹' . number_format($amount, 2, '.', ',');
     }
 }
 

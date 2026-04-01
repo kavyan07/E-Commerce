@@ -1,0 +1,4 @@
+SKU,Name,Price,Description,Image,Stock,CategoryID
+PROD001,Sample Product 1,2999,"High quality product with amazing features","public/images/products/sample1.jpg",50,1
+PROD002,Sample Product 2,4999,"Premium product for professionals","public/images/products/sample2.jpg",30,1
+PROD003,Sample Product 3,1999,"Budget-friendly option","public/images/products/sample3.jpg",100,2

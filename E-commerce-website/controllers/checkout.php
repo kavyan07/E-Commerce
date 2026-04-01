@@ -91,7 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'shipping_email' => $_POST['email'] ?? '',
             'shipping_phone' => $_POST['phone'] ?? '',
             'shipping_address' => ($_POST['street'] ?? '') . ', ' . ($_POST['city'] ?? '') . ', ' . ($_POST['state'] ?? '') . ', ' . ($_POST['zip'] ?? '') . ', ' . ($_POST['country'] ?? ''),
-            'items' => array_values($cartItems)
+            'items' => array_values($cartItems),
+            'payment_method' => $_POST['payment'] ?? 'COD',
+            'payment_status' => (isset($_POST['payment']) && in_array($_POST['payment'], ['razorpay', 'card', 'upi'])) ? 'Paid' : 'Pending',
+            'transaction_id' => $_POST['razorpay_payment_id'] ?? null,
+            'razorpay_order_id' => $_POST['razorpay_order_id'] ?? null
         ];
 
         try {

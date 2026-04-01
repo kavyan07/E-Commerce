@@ -9,6 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     $userDAO = new UserDAO();
+
+    // Check for admin login
+    if ($email === 'admin@gmail.com' && $password === 'admin123') {
+        $_SESSION['admin_user'] = [
+            'id' => 1,
+            'username' => 'admin'
+        ];
+        $_SESSION['flash_message'] = ['text' => 'Welcome Admin!', 'type' => 'success'];
+        header('Location: admin/dashboard');
+        exit;
+    }
+
     $result = $userDAO->login($email, $password);
 
     if ($result['success']) {

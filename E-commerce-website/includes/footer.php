@@ -6,15 +6,15 @@
         </div>
         <div class="footer-links">
             <h4>Quick Links</h4>
-            <a href="home">Home</a>
-            <a href="product-listing">Products</a>
-            <a href="cart">Cart</a>
+            <a href="/E-commerce-website/home">Home</a>
+            <a href="/E-commerce-website/product-listing">Products</a>
+            <a href="/E-commerce-website/cart">Cart</a>
         </div>
         <div class="footer-links">
             <h4>Account</h4>
-            <a href="login">Login</a>
-            <a href="signup">Sign Up</a>
-            <a href="my-orders">My Orders</a>
+            <a href="/E-commerce-website/login">Login</a>
+            <a href="/E-commerce-website/signup">Sign Up</a>
+            <a href="/E-commerce-website/my-orders">My Orders</a>
         </div>
     </div>
     <div class="footer-bottom">
@@ -23,7 +23,7 @@
 </footer>
 
 <!-- Phase 3: Client-Side Interactions JavaScript -->
-<script src="js/ecommerce.js"></script>
+<script src="/E-commerce-website/js/ecommerce.js"></script>
 
 <!-- Toast Notification System -->
 <script>

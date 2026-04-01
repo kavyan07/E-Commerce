@@ -40,10 +40,11 @@ function setCartBadge(count) {
     if (!badge) return;
     const n = parseInt(count, 10) || 0;
     if (n <= 0) {
-        badge.remove();
+        badge.style.display = 'none';
         return;
     }
     badge.textContent = String(n);
+    badge.style.display = 'inline-block';
 }
 
 function formatPriceFromInt(amount) {
@@ -205,6 +206,9 @@ function validateSignupForm() {
             validatePasswordField(this);
         });
         passwordInput.addEventListener('input', function () {
+            // Real-time strength update
+            updatePasswordStrength(this);
+
             // Check confirm password match in real-time
             if (confirmInput && confirmInput.value !== '') {
                 validatePasswordMatch(confirmInput, passwordInput);
@@ -371,39 +375,51 @@ function validatePasswordField(input) {
         return false;
     }
 
-    // Password strength indicator for signup form
-    const strengthEl = document.getElementById('passwordStrength');
-    const hintEl = document.getElementById('passwordHint');
-    if (strengthEl) {
-        const hasUpper = /[A-Z]/.test(value);
-        const hasNumber = /\d/.test(value);
-        const hasSpecial = /[@$!%*?&]/.test(value);
-        let score = 0;
-        if (hasUpper) score++;
-        if (hasNumber) score++;
-        if (hasSpecial) score++;
-
-        let strengthText = 'Weak';
-        let strengthColor = '#ef4444';
-
-        if (value.length >= 8 && score === 3) {
-            strengthText = 'Strong';
-            strengthColor = '#22c55e';
-        } else if (value.length >= 6 && score >= 2) {
-            strengthText = 'Medium';
-            strengthColor = '#f97316';
-        }
-
-        strengthEl.textContent = 'Password strength: ' + strengthText;
-        strengthEl.style.color = strengthColor;
-
-        if (hintEl) {
-            hintEl.textContent = 'Add uppercase, number, and special character to make password strong';
-        }
-    }
+    // Ensure strength is updated on blur too
+    updatePasswordStrength(input);
 
     clearInputError(input);
     return true;
+}
+
+function updatePasswordStrength(input) {
+    const value = input.value;
+    const strengthEl = document.getElementById('passwordStrength');
+    const hintEl = document.getElementById('passwordHint');
+
+    if (!strengthEl) return;
+
+    if (!value) {
+        strengthEl.textContent = '';
+        if (hintEl) hintEl.textContent = '';
+        return;
+    }
+
+    const hasUpper = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecial = /[@$!%*?&]/.test(value);
+    let score = 0;
+    if (hasUpper) score++;
+    if (hasNumber) score++;
+    if (hasSpecial) score++;
+
+    let strengthText = 'Weak';
+    let strengthColor = '#ef4444';
+
+    if (value.length >= 8 && score === 3) {
+        strengthText = 'Strong';
+        strengthColor = '#22c55e';
+    } else if (value.length >= 6 && score >= 2) {
+        strengthText = 'Medium';
+        strengthColor = '#f97316';
+    }
+
+    strengthEl.textContent = 'Password strength: ' + strengthText;
+    strengthEl.style.color = strengthColor;
+
+    if (hintEl) {
+        hintEl.textContent = 'Add uppercase, number, and special character (e.g. @, #, $) to make it strong';
+    }
 }
 
 function validateNameField(input, fieldName) {
@@ -554,7 +570,7 @@ function initCartInteractions() {
     const cartItems = document.getElementById('cartItems');
     if (!cartItems) return;
 
-    const cartApiUrl = 'ajax-cart';
+    const cartApiUrl = '/E-commerce-website/ajax-cart';
 
     // Event delegation for quantity controls and remove buttons
     cartItems.addEventListener('click', function (e) {
@@ -763,7 +779,7 @@ function updateCartTotals() {
 }
 
 function formatPrice(amount) {
-    return 'Rs. ' + amount.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return '₹' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 // ============================================
@@ -774,7 +790,7 @@ function initAddToCartAjax() {
     const forms = document.querySelectorAll('form.add-to-cart-form');
     if (!forms || forms.length === 0) return;
 
-    const cartApiUrl = 'ajax-cart';
+    const cartApiUrl = '/E-commerce-website/ajax-cart';
 
     forms.forEach((form) => {
         form.addEventListener('submit', function (e) {

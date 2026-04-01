@@ -1,0 +1,117 @@
+<section class="page-header">
+    <div class="header-content">
+        <h1><?php echo htmlspecialchars($this->product['name']); ?></h1>
+        <div class="breadcrumb">
+            <a href="/E-commerce-website/home">Home</a>
+            <span>/</span>
+            <a href="/E-commerce-website/product-listing">Products</a>
+            <span>/</span>
+            <span><?php echo htmlspecialchars($this->product['name']); ?></span>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="product-detail-layout">
+        <!-- Product Images -->
+        <div class="product-images">
+            <div class="main-image">
+                <img id="productImage" src="<?php echo $this->getImageUrl($this->product['image_main']); ?>" 
+                     alt="<?php echo htmlspecialchars($this->product['name']); ?>">
+            </div>
+            <div class="thumbnail-gallery">
+                <img class="product-thumbnail active" src="<?php echo $this->getImageUrl($this->product['image_main']); ?>" 
+                     onclick="updateMainImage(this.src, this)">
+                <!-- Additional thumbnails can be mapped here if available -->
+            </div>
+        </div>
+
+        <!-- Product Details Info -->
+        <div class="product-info">
+            <?php if (!empty($this->product['badge'])): ?>
+                <div class="product-badge">
+                    <?php echo htmlspecialchars($this->product['badge']); ?>
+                </div>
+            <?php endif; ?>
+
+            <h1><?php echo htmlspecialchars($this->product['name']); ?></h1>
+            
+            <div class="rating">
+                <div class="stars">★★★★★</div>
+                <span class="reviews">(15 Customer Reviews)</span>
+            </div>
+
+            <div class="price-section">
+                <span class="current-price">Rs. <?php echo number_format($this->product['price'], 2); ?></span>
+                <?php if (!empty($this->product['original_price'])): ?>
+                    <span class="original-price">Rs. <?php echo number_format($this->product['original_price'], 2); ?></span>
+                    <span class="discount">
+                        <?php 
+                        $pct = round((($this->product['original_price'] - $this->product['price']) / $this->product['original_price']) * 100);
+                        echo $pct . "% OFF";
+                        ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+
+            <p class="description">
+                <?php echo htmlspecialchars($this->product['description']); ?>
+            </p>
+
+            <form class="add-to-cart-form" id="pdpAddToCartForm">
+                <input type="hidden" name="product_id" value="<?php echo $this->product['entity_id']; ?>">
+                <input type="hidden" name="action" value="add">
+                
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <div class="quantity">
+                        <button type="button" class="qty-decrease" onclick="adjustQty(-1)">−</button>
+                        <input type="number" name="quantity" id="pdpQty" value="1" min="1" readonly>
+                        <button type="button" class="qty-increase" onclick="adjustQty(1)">+</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+            </form>
+
+            <div class="product-features">
+                <div class="feature">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Secure Checkout</span>
+                </div>
+                <div class="feature">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                    <span>Fast Shipping</span>
+                </div>
+                <div class="feature">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>24/7 Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function adjustQty(amount) {
+    const input = document.getElementById('pdpQty');
+    let val = parseInt(input.value) || 1;
+    val = Math.max(1, val + amount);
+    input.value = val;
+}
+
+function updateMainImage(src, thumb) {
+    document.getElementById('productImage').src = src;
+    document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+</script>

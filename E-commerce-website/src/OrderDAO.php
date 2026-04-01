@@ -22,8 +22,9 @@ class OrderDAO
             $sql = "INSERT INTO sales_orders (
                 order_number, user_id, cart_id, subtotal, tax, 
                 shipping_cost, final_amount, shipping_type,
-                shipping_name, shipping_email, shipping_phone, shipping_address
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                shipping_name, shipping_email, shipping_phone, shipping_address,
+                payment_method, payment_status, transaction_id, razorpay_order_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
@@ -35,10 +36,14 @@ class OrderDAO
                 $data['shipping_cost'] ?? 0,
                 $data['final_amount'],
                 $data['shipping_type'],
-                $data['shipping_name'],
-                $data['shipping_email'],
-                $data['shipping_phone'],
-                $data['shipping_address']
+                $data['shipping_name'] ?? 'Guest',
+                $data['shipping_email'] ?? '',
+                $data['shipping_phone'] ?? '',
+                $data['shipping_address'] ?? '',
+                $data['payment_method'] ?? 'COD',
+                $data['payment_status'] ?? 'Pending',
+                $data['transaction_id'] ?? null,
+                $data['razorpay_order_id'] ?? null
             ]);
 
             $orderId = $this->db->lastInsertId();
